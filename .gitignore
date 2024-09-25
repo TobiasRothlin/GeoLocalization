@@ -174,3 +174,5 @@ cython_debug/
 /GoogleStreetMapDataCollection/.googleApiKey
 /Dataset/GoogleStreetMapDataCollection/.googleApiKey
 /Dataset/.apiTokenMapBox
+
+*.idea
