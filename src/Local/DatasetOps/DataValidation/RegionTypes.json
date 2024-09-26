@@ -1,6 +1,6 @@
 {
     "PopulationAreas": [
-        "Urban",
+        "City",
         "Suburbs",
         "Countryside"
     ],
@@ -12,6 +12,7 @@
         "Industrial",
         "Agricultural",
         "Wetlands",
-        "Highlands"
+        "Highlands",
+        "Urban"
     ]
 }

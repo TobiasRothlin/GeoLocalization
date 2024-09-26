@@ -4,8 +4,6 @@ import os
 
 from tqdm import tqdm
 
-
-
 class DataLocator:
 
     def __init__(self, folder, number_of_threads=16):

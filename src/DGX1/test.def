@@ -1,0 +1,26 @@
+Bootstrap: docker
+From: python:3.9-slim
+
+%post
+    # Update and install necessary packages
+    apt-get update && apt-get install -y \
+        build-essential \
+        python3-pip \
+        python3-dev
+
+    # Clean up
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+%environment
+    # Set environment variables
+    export LC_ALL=C
+    export LANG=C
+    export PATH=/usr/local/bin:$PATH
+
+%runscript
+    # This is the default command when the container runs
+    exec python3 /test.py
+
+%test
+    # Test to ensure Python is installed correctly
+    python3 --version

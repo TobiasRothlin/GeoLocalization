@@ -1,0 +1,9 @@
+{
+    "copyJobs": [
+        {
+            "source": "Dataset/SourceDataset",
+            "destination": "Dataset/DestinationDataset",
+            "batchSize": 1000
+        }
+    ]
+}
