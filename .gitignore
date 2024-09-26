@@ -178,3 +178,4 @@ cython_debug/
 *.idea
 /.apiTokenMapillary
 /src/Local/DatasetOps/MapillaryAPI/.apiTokenMapillary
+src/DGX1/test.sif

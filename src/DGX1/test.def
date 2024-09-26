@@ -11,6 +11,9 @@ From: python:3.9-slim
     # Clean up
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+%files
+    test.py test.py
+
 %environment
     # Set environment variables
     export LC_ALL=C
