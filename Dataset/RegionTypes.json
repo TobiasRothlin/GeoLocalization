@@ -1,0 +1,17 @@
+{
+    "PopulationAreas": [
+        "Urban",
+        "Suburbs",
+        "Countryside"
+    ],
+    "Regions":[
+        "Coastal",
+        "Mountainous",
+        "Desert",
+        "Woodlands",
+        "Industrial",
+        "Agricultural",
+        "Wetlands",
+        "Highlands"
+    ]
+}
