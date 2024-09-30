@@ -95,11 +95,11 @@ if __name__ == "__main__":
     else:
         print(f"❌ \033[31m {len(test_files_json)-(len(test_files_jpg) +len(test_files_jpeg))} are missing ! \033[0m")  # Red 
 
-    check_json_files(train_files_json + test_files_json, num_threads=32)
+    check_json_files(train_files_json + test_files_json, num_threads=64)
 
-    put_locations_to_json_files(train_files_json + test_files_json, num_threads=32)
+    put_locations_to_json_files(train_files_json + test_files_json, num_threads=64)
 
-    check_json_files(train_files_json + test_files_json, num_threads=32)
+    check_json_files(train_files_json + test_files_json, num_threads=64)
     
     if dl_Test.did_update_cache:
         createLableFile(test_files_json, os.path.join(TEST_DATA_FOLDER, "test.csv"))

@@ -76,6 +76,8 @@ def check_json_files(json_files, num_threads=16):
         "CanOpenImage": 0
     }
 
+    print(f"Checking {len(json_files):,d} files")
+
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = [executor.submit(check_single_file, json_file) for json_file in json_files]
         for future in tqdm(as_completed(futures), total=len(json_files), desc=f"Checking JSON Files"):
@@ -92,7 +94,3 @@ def check_json_files(json_files, num_threads=16):
         print("|--",end="")
         print(f" {check}: {checks[check]:,d} ({(checks[check]/len(json_files))*100:.2f}%)")
     print("")
-
-        
-        
-       
