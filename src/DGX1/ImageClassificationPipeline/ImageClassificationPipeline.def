@@ -1,0 +1,20 @@
+Bootstrap: docker
+From: nvidia/pytorch:23.10-py3
+Registry: nvcr.io
+%files
+    requirements-ImageClassification.txt /opt/requirements.txt
+    /home/tobias.rothlin/GeoLocalization/src/Local/DatasetOps/CopyDataset/DataLocator.py /DataLocator.py
+    /home/tobias.rothlin/GeoLocalization/src/DGX1/ImageClassificationPipeline/ImageClassification.py /ImageClassification.py
+    /home/tobias.rothlin/GeoLocalization/src/DGX1/ImageClassificationPipeline/Classifiaction.py /Classifiaction.py
+    
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    apt update
+    apt install -y --no-install-recommends git gnupg2 python3-tk build-essential zsh
+    rm -rf /var/lib/apt/lists/*
+    python -m pip install --upgrade pip
+    pip install -r /opt/requirements.txt
+
+%runscript
+    exec python3 /ImageClassification.py

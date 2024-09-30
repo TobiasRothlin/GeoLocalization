@@ -8,3 +8,4 @@ emoji~=2.13.2
 certifi~=2024.8.30
 geopy~=2.4.1
 mercantile~=1.2.1
+reverse-geocode~=1.6.5

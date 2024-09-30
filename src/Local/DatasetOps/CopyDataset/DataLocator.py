@@ -4,6 +4,10 @@ import os
 
 from tqdm import tqdm
 
+import json
+
+from time import time
+
 class DataLocator:
 
     def __init__(self, folder, number_of_threads=16):
@@ -12,8 +16,47 @@ class DataLocator:
   
         self.folder_all_files = []
 
-        self.indexAllFiles()
+        self.max_age = 60*60*24 # 24 hours
+        self.cache_file_path = f"{self.folder}/cache.json"
+        self.cache_content = {}
 
+        self.did_update_cache = False
+
+        if self.load_cache():
+            if time() - self.last_cache_update > self.max_age:
+                print("Cache is older than 24 hours")
+                print("Indexing all files")
+                self.indexAllFiles()
+                self.save_cache()
+            else:
+                print("Cache is up to date")
+
+        else:
+            print("Indexing all files")
+            self.indexAllFiles()
+            self.save_cache()
+
+
+    def load_cache(self):
+        if os.path.exists(self.cache_file_path):
+            with open(self.cache_file_path, "r") as f:
+                self.cache_content = json.load(f)
+
+            self.folder_all_files = self.cache_content["folder_all_files"]
+            self.last_cache_update = self.cache_content["last_cache_update"]
+
+            return True
+        else:
+            print("No cache file found")
+            return False
+
+    def save_cache(self):
+        self.did_update_cache = True
+        self.cache_content["folder_all_files"] = self.folder_all_files
+        self.cache_content["last_cache_update"] = time()
+
+        with open(self.cache_file_path, "w") as f:
+            json.dump(self.cache_content, f, indent=4)
 
     def indexAllFiles(self):
         self.folder_all_files = self.__search_files_in_directory(self.folder)
