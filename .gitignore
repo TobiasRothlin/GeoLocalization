@@ -184,3 +184,5 @@ src/DGX1/test.sif
 *.sif
 
 /home/tobias.rothlin/GeoLocalization/src/DGX1/src/Visualization/.env
+
+/home/tobias.rothlin/GeoLocalization/src/DGX1/src/MapillaryCollection/.apiTokenMapillary
