@@ -1,0 +1,20 @@
+{
+    "ToDownload": [
+        {
+            "lat": -17.844042,
+            "lon": 31.083932,
+            "radius": 50,
+            "numberOfImages": 1950,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "lat": -16.395303,
+            "lon": 30.997191,
+            "radius": 50,
+            "numberOfImages": 50,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        }
+    ]
+}

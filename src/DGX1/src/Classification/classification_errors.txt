@@ -1,0 +1,4 @@
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_53/23d563aa-891a-41da-a728-878c662b5bae.json: Expecting value: line 1 column 1 (char 0)
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_429/ypkbeBetBLdiKzH1h87S-w.json: Expecting value: line 1 column 1 (char 0)
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1086/uSTrrC4LG4PAh9zahU4jyg.json: Expecting value: line 1 column 1 (char 0)
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_910/WbnnGqiDOZbRWwU7KoSxfK.json: Expecting value: line 1 column 1 (char 0)

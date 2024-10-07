@@ -1,5 +1,7 @@
 import torch
 import os
+import sys
+sys.path.append('/home/tobias.rothlin/GeoLocalization/src/DGX1/src/Utility')
 
 from time import sleep
 

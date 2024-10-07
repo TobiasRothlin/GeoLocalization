@@ -62,7 +62,7 @@ def check_single_file(json_file, required_keys=None):
     return checkes
 
 
-def check_json_files(json_files, num_threads=16):
+def check_batch_of_files(json_batch):
     checks = {
         "city": 0,
         "country": 0,
@@ -76,16 +76,27 @@ def check_json_files(json_files, num_threads=16):
         "CanOpenImage": 0
     }
 
+    for file in json_batch:
+        res = check_single_file(file)
+        for key in res:
+            if res[key]:
+                checks[key] += 1
+
+    return checks
+
+
+def check_json_files(json_files, num_threads=16):
     print(f"Checking {len(json_files):,d} files")
 
-    with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = [executor.submit(check_single_file, json_file) for json_file in json_files]
-        for future in tqdm(as_completed(futures), total=len(json_files), desc=f"Checking JSON Files"):
-            result = future.result()
-            for key in result:
-                if result[key]:
-                    checks[key] += 1
+    json_batches = [json_files[i:i + num_threads] for i in range(0, len(json_files), num_threads)]
 
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        futures = {executor.submit(check_batch_of_files, batch): batch for batch in json_batches}
+        checks = {key: 0 for key in ["city", "country", "lat", "lon", "PredictedPopulationArea", "PredictedRegion", "DidReverseGeoLocation", "DidClassification", "ImageExists", "CanOpenImage"]}
+        for future in tqdm(as_completed(futures), total=len(futures), desc=f"Checking files"):
+            res = future.result()
+            for key in res:
+                checks[key] += res[key]
 
     print(f"Checked {len(json_files):,d} files")
     for check in checks:
@@ -94,3 +105,5 @@ def check_json_files(json_files, num_threads=16):
         print("|--",end="")
         print(f" {check}: {checks[check]:,d} ({(checks[check]/len(json_files))*100:.2f}%)")
     print("")
+
+    return checks

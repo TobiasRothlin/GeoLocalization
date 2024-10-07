@@ -89,21 +89,27 @@ def put_location_to_json(json_file):
     with open(json_file, "w") as f:
         json.dump(data, f, indent=4)
 
-def put_locations_to_json_files(json_files, num_threads=8):
-    with open("error_log.txt", "w") as f:
+
+def put_locations_to_json_batches(batch):
+    for json_file in batch:
+        put_location_to_json(json_file)
+
+def put_locations_to_json_files(json_files, num_threads=8,error_log="error_log.txt"):
+    with open(error_log, "w") as f:
         f.write("")
 
+    batches = [json_files[i:i + num_threads] for i in range(0, len(json_files), num_threads)]
+
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = {executor.submit(put_location_to_json, json_file): json_file for json_file in json_files}
-        for future in tqdm(as_completed(futures), total=len(futures), desc="Putting locations in JSON"):
-            # Check for exceptions
+        futures = [executor.submit(put_locations_to_json_batches, batch) for batch in tqdm(batches, desc="Reverse Geo Coding")]
+        for future in as_completed(futures):
             try:
                 future.result()
             except Exception as e:
-                with(open("error_log.txt", "a")) as f:
-                    f.write(f"Error in {futures[future]}: {e}\n")
-                continue
+                with open(error_log, "a") as f:
+                    f.write(f"Error in put_locations_to_json_files: {e}\n")
 
+        print("Done Reverse Geo Coding")
 
 
         
