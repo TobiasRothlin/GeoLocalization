@@ -183,6 +183,6 @@ src/DGX1/test.sif
 # Ignore all .sif files
 *.sif
 
-/home/tobias.rothlin/GeoLocalization/src/DGX1/src/Visualization/.env
+/src/DGX1/src/Visualization/.env
 
-/home/tobias.rothlin/GeoLocalization/src/DGX1/src/MapillaryCollection/.apiTokenMapillary
+/src/DGX1/src/MapillaryCollection/.apiTokenMapillary
