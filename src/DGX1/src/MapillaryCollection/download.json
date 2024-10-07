@@ -1,20 +1,170 @@
 {
     "ToDownload": [
         {
-            "lat": -17.844042,
-            "lon": 31.083932,
-            "radius": 50,
-            "numberOfImages": 1950,
-            "DidDownload": false,
-            "IamgesDownloaded": 0
+            "_country": "Namibia",
+            "lat": -22.566628,
+            "lon": 17.093001,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
-            "lat": -16.395303,
-            "lon": 30.997191,
+            "_country": "Namibia",
+            "lat": -19.030081,
+            "lon": 16.463414,
+            "radius": 30,
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Kuwait",
+            "lat": 29.302428,
+            "lon": 47.964617,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Kuwait",
+            "lat": 28.668087,
+            "lon": 47.966981,
+            "radius": 30,
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Mali",
+            "lat": 12.631933,
+            "lon": -8.010573,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Mali",
+            "lat": 13.72897,
+            "lon": -6.074437,
             "radius": 50,
-            "numberOfImages": 50,
-            "DidDownload": false,
-            "IamgesDownloaded": 0
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Nepal",
+            "lat": 27.712362,
+            "lon": 85.331527,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Nepal",
+            "lat": 27.94386,
+            "lon": 84.856292,
+            "radius": 50,
+            "numberOfImages": 100,
+            "DidDownload": false
+        },
+        {
+            "_country": "Greenland",
+            "lat": 69.729833,
+            "lon": -50.214056,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Hong Kong",
+            "lat": 22.304437,
+            "lon": 114.174503,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Hong Kong",
+            "lat": 22.254547,
+            "lon": 113.940271,
+            "radius": 30,
+            "numberOfImages": 100,
+            "DidDownload": false
+        },
+        {
+            "_country": "Central African Republic",
+            "lat": 5.26455,
+            "lon": 17.649877,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": false
+        },
+        {
+            "_country": "Honduras",
+            "lat": 14.090241,
+            "lon": -87.201357,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Honduras",
+            "lat": 15.025627,
+            "lon": -86.073033,
+            "radius": 50,
+            "numberOfImages": 100,
+            "DidDownload": false
+        },
+        {
+            "_country": "Cameroon",
+            "lat": 3.86437,
+            "lon": 11.510352,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Cameroon",
+            "lat": 5.569438,
+            "lon": 10.310122,
+            "radius": 50,
+            "numberOfImages": 100,
+            "DidDownload": false
+        },
+        {
+            "_country": "Afghanistan",
+            "lat": 34.51581,
+            "lon": 69.181083,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Afghanistan",
+            "lat": 36.129919,
+            "lon": 68.078321,
+            "radius": 70,
+            "numberOfImages": 100,
+            "DidDownload": false
+        },
+        {
+            "_country": "Botswana",
+            "lat": -19.972387,
+            "lon": 23.438924,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Botswana",
+            "lat": -19.210425,
+            "lon": 23.449357,
+            "radius": 70,
+            "numberOfImages": 100,
+            "DidDownload": false
         }
     ]
 }

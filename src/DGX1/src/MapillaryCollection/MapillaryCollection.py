@@ -120,7 +120,7 @@ class MapillaryInterface:
             if not (
                     -180 <= bbox.west <= 180 and -180 <= bbox.east <= 180 and -90 <= bbox.south <= 90 and -90 <= bbox.north <= 90):
                 with open(self.error_log, "a") as f:
-                    f.write(f"--Invalid Bounding Box: {bbox_str}")
+                    f.write(f"--Invalid Bounding Box: {bbox_str}\n")
 
             fields = [
                 "thumb_original_url",
@@ -137,7 +137,7 @@ class MapillaryInterface:
                         image_data += data["data"]
                     except KeyError as e:
                         with open(self.error_log, "a") as f:
-                            f.write(f"--KeyError: {e} in {data}")
+                            f.write(f"--KeyError: {e} in {data}\n")
 
                     url = data.get('paging', {}).get('next', None)
             progress_bar.update(1)
@@ -190,7 +190,7 @@ class MapillaryInterface:
         for sample in tqdm(image_data, desc="Processing Image Data"):
             if not self.__is_image_data_valid(sample):
                 with open(self.error_log, "a") as f:
-                    f.write(f"--Invalid Image Data: {sample}")
+                    f.write(f"--Invalid Image Data: {sample}\n")
             else:
                 if sample["thumb_original_url"] not in processed_thumbs:
                     clean_data.append({
@@ -215,8 +215,8 @@ class MapillaryInterface:
             json_file_name = file_name
             image_file_name = file_name
 
-        bbox = self.__get_bbox(lat, lon, radius, show_plot=True)
-        data = self.__get_image_data_by_bbox(*bbox, show_plot=True)
+        bbox = self.__get_bbox(lat, lon, radius, show_plot=False)
+        data = self.__get_image_data_by_bbox(*bbox, show_plot=False)
         data = self.__process_image_data(data)
 
         data_no_pano = [sample for sample in data if not sample["is_pano"]]

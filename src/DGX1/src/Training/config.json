@@ -1,0 +1,19 @@
+{
+    "Runs":
+    [
+        {
+            "BaseModel": "openai/clip-vit-base-patch32",
+            "Discripiton": "CLIP with ViT base model",
+            "LearningRate": 0.0001,
+            "TrainBatchSize": 64,
+            "TestBatchSize": 32,
+            "Epochs": 10,
+            "ImageWidth": 224,
+            "ImageHeight": 224,
+            "UseCenterCrop": true,
+            "NumWorkers": 32,
+            "PersistantWorkers": true,
+            "PrefetchFactor": 8
+        }
+    ]
+}
