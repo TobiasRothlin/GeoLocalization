@@ -195,6 +195,7 @@ def doVisualizaiton(trian_files,test_files):
     
 
     with mlflow.start_run():
+        print("Starting Visualization")
         # Pi Chart showing the distribution of the data
         fig = px.pie(values=[len(trian_files), len(test_files)], names=["Train", "Test"], title="Data Distribution")
         mlflow.log_figure(fig, "DataDistribution.html")
@@ -219,8 +220,10 @@ def doVisualizaiton(trian_files,test_files):
         fig = px.pie(values=[plot_data["Train"]["Did Reverse Geocoding"], len(trian_files)-plot_data["Train"]["Did Reverse Geocoding"]], names=["Reverse Geocoded", "Not Reverse Geocoded"], title="Reverse Geocoded Files")
         mlflow.log_figure(fig, "Train_ReverseGeocodedFiles.html")
 
+
         fig = px.pie(values=[plot_data["Test"]["Did Reverse Geocoding"], len(test_files)-plot_data["Test"]["Did Reverse Geocoding"]], names=["Reverse Geocoded", "Not Reverse Geocoded"], title="Reverse Geocoded Files")
         mlflow.log_figure(fig, "Test_ReverseGeocodedFiles.html")
+
 
         # Pi Chart showing how many files are classified
         fig = px.pie(values=[plot_data["Train"]["Did Classification"], len(trian_files)-plot_data["Train"]["Did Classification"]], names=["Classified", "Not Classified"], title="Classified Files")
@@ -233,6 +236,8 @@ def doVisualizaiton(trian_files,test_files):
         train_country_keys, train_country_values = sort_data(plot_data["Train"]["CountryCount"])
         fig = px.bar(x=train_country_keys, y=train_country_values, title="Countries Distribution")
         mlflow.log_figure(fig, "Train_CountriesDistribution.html")
+        fig.write_html("./Train_CountriesDistribution.html")
+        
 
         test_country_keys, test_country_values = sort_data(plot_data["Test"]["CountryCount"])
         fig = px.bar(x=test_country_keys, y=test_country_values, title="Countries Distribution")
@@ -251,6 +256,7 @@ def doVisualizaiton(trian_files,test_files):
         train_region_keys, train_region_values = sort_data(plot_data["Train"]["RegionCount"])
         fig = px.bar(x=train_region_keys, y=train_region_values, title="Regions Distribution")
         mlflow.log_figure(fig, "Train_RegionsDistribution.html")
+        fig.write_html("./Train_RegionsDistribution.html")
 
         test_region_keys, test_region_values = sort_data(plot_data["Test"]["RegionCount"])
         fig = px.bar(x=test_region_keys, y=test_region_values, title="Regions Distribution")
@@ -260,6 +266,7 @@ def doVisualizaiton(trian_files,test_files):
         train_population_keys, train_population_values = sort_data(plot_data["Train"]["PopulationAreaCount"])
         fig = px.bar(x=train_population_keys, y=train_population_values, title="Population Area Distribution")
         mlflow.log_figure(fig, "Train_PopulationAreaDistribution.html")
+        fig.write_html("./Train_PopulationAreaDistribution.html")
 
         test_population_keys, test_population_values = sort_data(plot_data["Test"]["PopulationAreaCount"])
         fig = px.bar(x=test_population_keys, y=test_population_values, title="Population Area Distribution")
@@ -267,8 +274,14 @@ def doVisualizaiton(trian_files,test_files):
 
 
         # Scatter Map showing the distribution of the data
+        print("Getting LatLong")
+
         train_latlong = getLatLongFiles(trian_files)
         test_latlong = getLatLongFiles(test_files)
+
+        print(train_latlong[:10])
+        print(test_latlong[:10])
+
 
         fig = go.Figure()
         fig.add_trace(go.Scattergeo(
@@ -295,7 +308,9 @@ def doVisualizaiton(trian_files,test_files):
             )
         ))
 
+        print("Ploting the Training Data")
         mlflow.log_figure(fig, "Train_DataDistribution.html")
+        fig.write_html("./Train_DataDistribution.html")
 
 
         fig = go.Figure()
@@ -325,12 +340,14 @@ def doVisualizaiton(trian_files,test_files):
 
         mlflow.log_figure(fig, "Test_DataDistribution.html")
 
-
+        print("Ploting the Training Data on a heat map")
         # Heat Map showing the distribution of the data
         fig = go.Figure()
         fig.add_trace(go.Densitymapbox(lat=[x[0] for x in train_latlong], lon=[x[1] for x in train_latlong], radius=10))
         fig.update_layout(mapbox_style="stamen-terrain", mapbox_center_lon=0)
         mlflow.log_figure(fig, "Train_HeatMap.html")
+        fig.write_html("./Train_HeatMap.html")
+
 
         fig = go.Figure()
         fig.add_trace(go.Densitymapbox(lat=[x[0] for x in test_latlong], lon=[x[1] for x in test_latlong], radius=10))

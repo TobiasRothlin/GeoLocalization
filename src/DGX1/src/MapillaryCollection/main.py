@@ -52,6 +52,8 @@ if __name__ == "__main__":
 
     mi = MapillaryInterface(api_key)
 
+    print(f"Found {len(download_data['ToDownload'])} locations to download")
+
     for config in download_data["ToDownload"]:
         if config["DidDownload"]:
             print(f"Skipping {config['lat']}, {config['lon']}")

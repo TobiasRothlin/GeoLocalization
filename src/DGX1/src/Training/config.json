@@ -1,19 +1,54 @@
 {
-    "Runs":
-    [
-        {
-            "BaseModel": "openai/clip-vit-base-patch32",
+    "Runs": [
+        {   
+            "RunName": "CLIP",
+            "BaseModel": "openai/clip-vit-large-patch14-336",
             "Discripiton": "CLIP with ViT base model",
             "LearningRate": 0.0001,
             "TrainBatchSize": 64,
             "TestBatchSize": 32,
             "Epochs": 10,
-            "ImageWidth": 224,
-            "ImageHeight": 224,
+            "ImageWidth": 336,
+            "ImageHeight": 336,
             "UseCenterCrop": true,
             "NumWorkers": 32,
             "PersistantWorkers": true,
-            "PrefetchFactor": 8
+            "PrefetchFactor": 8,
+            "ImageMean": [
+                0.48145466,
+                0.4578275,
+                0.40821073
+            ],
+            "ImageStd": [
+                0.26862954,
+                0.26130258,
+                0.27577711
+            ]
+        },
+        {   
+            "RunName": "SteetCLIP",
+            "BaseModel": "geolocal/StreetCLIP",
+            "Discripiton": "CLIP with ViT base model",
+            "LearningRate": 0.0001,
+            "TrainBatchSize": 64,
+            "TestBatchSize": 32,
+            "Epochs": 10,
+            "ImageWidth": 336,
+            "ImageHeight": 336,
+            "UseCenterCrop": true,
+            "NumWorkers": 32,
+            "PersistantWorkers": true,
+            "PrefetchFactor": 8,
+            "ImageMean": [
+                0.48145466,
+                0.4578275,
+                0.40821073
+            ],
+            "ImageStd": [
+                0.26862954,
+                0.26130258,
+                0.27577711
+            ]
         }
     ]
 }

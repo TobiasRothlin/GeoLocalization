@@ -6,10 +6,11 @@ shh tobias.rothlin@dgx.infs.ch
 ```
 
 
-## Apptainers
+## Start Ingest Piepline
 
 ```
-./run_ingest_pipeline.sh
+tmux new -s pipeline
+./main.sh -g 0
 ```
 
 

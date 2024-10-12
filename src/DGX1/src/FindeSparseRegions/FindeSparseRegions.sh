@@ -59,3 +59,7 @@ find_jupyter_info
 
 # Remove the log file
 rm -f $APPTAINER_LOG_PATH
+
+
+# Shut down the Apptainer container
+# apptainer instance stop $SESSION_NAME

@@ -18,13 +18,13 @@ import os
 
 
 class GeoLocalizationDataset(Dataset):
-    def __init__(self, folder,
+    def __init__(self, folder, image_mean, image_std,
                  image_width=None,
                  image_height=None,
                  augmentation=None,
                  use_center_crop=False,
                  error_output="./error_output.txt",
-                 check_images=False,):
+                 check_images=False):
         
         """
         :param folder: The folder containing the images and the labels
@@ -38,6 +38,9 @@ class GeoLocalizationDataset(Dataset):
         
         self.folder = folder
         self.check_images = check_images
+
+        self.image_mean = image_mean
+        self.image_std = image_std
 
         with open(error_output, "w") as f:
             f.write("")
@@ -114,6 +117,7 @@ class GeoLocalizationDataset(Dataset):
         """
         with Image.open(image_path) as img:
             image = img.copy()
+        image = image.convert("RGB")
         return image
 
     def __len__(self):
@@ -137,8 +141,49 @@ class GeoLocalizationDataset(Dataset):
             pass
         else:
             raise ValueError("Image type not supported")
+        
+        # Normalize the image
+        image = (image - torch.tensor(self.image_mean).view(3, 1, 1)) / torch.tensor(self.image_std).view(3, 1, 1)
 
         label = torch.tensor(label)
         return image, label
+    
+    def get_raw_image(self, idx):
+        """
+        Get the raw image
+        :param idx: The index
+        :return: The image
+        """
+        image_path, _ = self.data[idx]
+        image = self.__load_image(image_path)
+        return image
+    
+    def get_image_location(self, idx):
+        """
+        Get the image location
+        :param idx: The index
+        :return: The image location
+        """
+        image_path, _ = self.data[idx]
+
+        image, _ = self.__getitem__(idx)
+
+        if "jpeg" in image_path:
+            json_path = image_path.replace(".jpeg", ".json")
+        elif "jpg" in image_path:
+            json_path = image_path.replace(".jpg", ".json")
+        else:
+            raise ValueError("Image path not supported")
+
+        with open(json_path, "r") as f:
+            try:
+                raw_data = json.load(f)
+            except Exception as e:
+                print(f"Error loading json file: {json_path}")
+                raise e
+
+
+        
+        return image, raw_data["country"]
     
     

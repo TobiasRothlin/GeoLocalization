@@ -9,3 +9,4 @@ trl==0.10.1
 python-dotenv==1.0.1
 ruff==0.6.4
 mypy==1.11.2
+torch-summary==1.4.5

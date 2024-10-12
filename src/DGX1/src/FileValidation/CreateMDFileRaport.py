@@ -26,7 +26,7 @@ def createMDFileRaport(data):
     text += f"    - Country: {data['Test']['Checks']['country']} | {data['Test']['Total']} ({100*data['Test']['Checks']['country']/data['Test']['Total']}%)\n"
     text += f"    - Latitude: {data['Test']['Checks']['lat']} | {data['Test']['Total']} ({100*data['Test']['Checks']['lat']/data['Test']['Total']}%)\n"
     text += f"    - Longitude: {data['Test']['Checks']['lon']} | {data['Test']['Total']} ({100*data['Test']['Checks']['lon']/data['Test']['Total']}%)\n"
-    text += f"    - Predicted Population Area: {data['Test']['Checks']['PredictedPopulationArea']} | {data['Test']['Total']} (100*{data['Test']['Checks']['PredictedPopulationArea']/data['Test']['Total']}%)\n"
+    text += f"    - Predicted Population Area: {data['Test']['Checks']['PredictedPopulationArea']} | {data['Test']['Total']} ({100*data['Test']['Checks']['PredictedPopulationArea']/data['Test']['Total']}%)\n"
     text += f"    - Predicted Region: {data['Test']['Checks']['PredictedRegion']} | {data['Test']['Total']} ({100*data['Test']['Checks']['PredictedRegion']/data['Test']['Total']}%)\n"
     text += f"    - Did Reverse Geo Location: {data['Test']['Checks']['DidReverseGeoLocation']} | {data['Test']['Total']} ({100*data['Test']['Checks']['DidReverseGeoLocation']/data['Test']['Total']}%)\n"
     text += f"    - Did Classification: {data['Test']['Checks']['DidClassification']} | {data['Test']['Total']} ({100*data['Test']['Checks']['DidClassification']/data['Test']['Total']}%)\n"

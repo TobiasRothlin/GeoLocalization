@@ -40,7 +40,7 @@ if [ "$REBUILD" = true ]; then
 fi
 
 # Start a new tmux session and run the container
-echo "Starting tmux session and running the container..."
+echo "Starting session and running the container..."
 if [ -n "$CUDA_VISIBLE_DEVICES" ]; then
     echo "GPU specified. Running the container on GPU $CUDA_VISIBLE_DEVICES..."
 

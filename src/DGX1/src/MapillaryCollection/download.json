@@ -1,170 +1,517 @@
 {
     "ToDownload": [
         {
-            "_country": "Namibia",
-            "lat": -22.566628,
-            "lon": 17.093001,
+            "_country": "Nord Korea",
+            "lat": 39.046575,
+            "lon": 125.758581,
+            "radius": 30,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Nord Korea",
+            "lat": 38.513,
+            "lon": 125.765765,
+            "radius": 70,
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Taiwan",
+            "lat": 25.03159,
+            "lon": 121.535236,
             "radius": 30,
             "numberOfImages": 2000,
             "DidDownload": true,
             "IamgesDownloaded": 2000
         },
         {
-            "_country": "Namibia",
-            "lat": -19.030081,
-            "lon": 16.463414,
-            "radius": 30,
-            "numberOfImages": 100,
-            "DidDownload": true,
-            "IamgesDownloaded": 100
-        },
-        {
-            "_country": "Kuwait",
-            "lat": 29.302428,
-            "lon": 47.964617,
+            "_country": "Taiwan",
+            "lat": 24.770372,
+            "lon": 121.007166,
             "radius": 30,
             "numberOfImages": 2000,
             "DidDownload": true,
             "IamgesDownloaded": 2000
         },
         {
-            "_country": "Kuwait",
-            "lat": 28.668087,
-            "lon": 47.966981,
-            "radius": 30,
-            "numberOfImages": 100,
+            "_country": "Taiwan",
+            "lat": 23.393179,
+            "lon": 120.452786,
+            "radius": 60,
+            "numberOfImages": 2000,
             "DidDownload": true,
-            "IamgesDownloaded": 100
+            "IamgesDownloaded": 2000
         },
         {
-            "_country": "Mali",
-            "lat": 12.631933,
-            "lon": -8.010573,
+            "_country": "Taiwan",
+            "lat": 23.566073,
+            "lon": 119.589565,
+            "radius": 60,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Turks and Caicos Islands",
+            "lat": 21.468056,
+            "lon": -71.137605,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1674
+        },
+        {
+            "_country": "St Andrew",
+            "lat": 49.454158,
+            "lon": -2.569739,
             "radius": 30,
             "numberOfImages": 2000,
             "DidDownload": true,
             "IamgesDownloaded": 2000
         },
         {
-            "_country": "Mali",
-            "lat": 13.72897,
-            "lon": -6.074437,
-            "radius": 50,
-            "numberOfImages": 100,
-            "DidDownload": true,
-            "IamgesDownloaded": 100
-        },
-        {
-            "_country": "Nepal",
-            "lat": 27.712362,
-            "lon": 85.331527,
-            "radius": 30,
-            "numberOfImages": 2000,
-            "DidDownload": false
-        },
-        {
-            "_country": "Nepal",
-            "lat": 27.94386,
-            "lon": 84.856292,
-            "radius": 50,
-            "numberOfImages": 100,
-            "DidDownload": false
-        },
-        {
-            "_country": "Greenland",
-            "lat": 69.729833,
-            "lon": -50.214056,
+            "_country": "Chad",
+            "lat": 13.226319,
+            "lon": 21.850586,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
-            "_country": "Hong Kong",
-            "lat": 22.304437,
-            "lon": 114.174503,
-            "radius": 30,
+            "_country": "Equatorial Guinea",
+            "lat": 2.049532,
+            "lon": 11.240796,
+            "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1262
         },
         {
-            "_country": "Hong Kong",
-            "lat": 22.254547,
-            "lon": 113.940271,
-            "radius": 30,
-            "numberOfImages": 100,
-            "DidDownload": false
+            "_country": "Guadaloupe",
+            "lat": 16.247942,
+            "lon": -61.574034,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
-            "_country": "Central African Republic",
-            "lat": 5.26455,
-            "lon": 17.649877,
+            "_country": "Taijkistan",
+            "lat": 37.978737,
+            "lon": 71.384192,
             "radius": 70,
             "numberOfImages": 500,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         },
         {
-            "_country": "Honduras",
-            "lat": 14.090241,
-            "lon": -87.201357,
-            "radius": 30,
-            "numberOfImages": 2000,
-            "DidDownload": false
-        },
-        {
-            "_country": "Honduras",
-            "lat": 15.025627,
-            "lon": -86.073033,
-            "radius": 50,
-            "numberOfImages": 100,
-            "DidDownload": false
-        },
-        {
-            "_country": "Cameroon",
-            "lat": 3.86437,
-            "lon": 11.510352,
-            "radius": 30,
-            "numberOfImages": 2000,
-            "DidDownload": false
-        },
-        {
-            "_country": "Cameroon",
-            "lat": 5.569438,
-            "lon": 10.310122,
-            "radius": 50,
-            "numberOfImages": 100,
-            "DidDownload": false
-        },
-        {
-            "_country": "Afghanistan",
-            "lat": 34.51581,
-            "lon": 69.181083,
-            "radius": 30,
-            "numberOfImages": 2000,
-            "DidDownload": false
-        },
-        {
-            "_country": "Afghanistan",
-            "lat": 36.129919,
-            "lon": 68.078321,
+            "_country": "Taijkistan",
+            "lat": 38.018147,
+            "lon": 73.820418,
             "radius": 70,
-            "numberOfImages": 100,
-            "DidDownload": false
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         },
         {
-            "_country": "Botswana",
-            "lat": -19.972387,
-            "lon": 23.438924,
+            "_country": "Taijkistan",
+            "lat": 38.544466,
+            "lon": 68.787922,
+            "radius": 30,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Taijkistan",
+            "lat": 37.88708,
+            "lon": 69.904904,
+            "radius": 70,
+            "numberOfImages": 200,
+            "DidDownload": true,
+            "IamgesDownloaded": 200
+        },
+        {
+            "_country": "West Sahara",
+            "lat": 24.079594,
+            "lon": -15.564512,
+            "radius": 70,
+            "numberOfImages": 200,
+            "DidDownload": true,
+            "IamgesDownloaded": 16
+        },
+        {
+            "_country": "Somalia",
+            "lat": 9.37637,
+            "lon": 44.096632,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Faroe Islands",
+            "lat": 62.069708,
+            "lon": -6.877181,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "North Macedonia",
+            "lat": 41.995903,
+            "lon": 21.4349,
             "radius": 30,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
-            "_country": "Botswana",
-            "lat": -19.210425,
-            "lon": 23.449357,
+            "_country": "North Macedonia",
+            "lat": 41.897473,
+            "lon": 22.408712,
+            "radius": 60,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Norfolk Island",
+            "lat": -29.042062,
+            "lon": 167.950882,
+            "radius": 60,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Norfolk Island",
+            "lat": -29.04,
+            "lon": 167.95,
+            "radius": 60,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Vietnam",
+            "lat": 10.811993,
+            "lon": 106.663087,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Vietnam",
+            "lat": 11.044184,
+            "lon": 107.991171,
+            "radius": 60,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Turkmekistan",
+            "lat": 37.894019,
+            "lon": 58.454253,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Turkmekistan",
+            "lat": 37.359306,
+            "lon": 60.866582,
+            "radius": 60,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Antigua and Barbuda",
+            "lat": 17.097067,
+            "lon": -61.829392,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Liberia",
+            "lat": 6.317269,
+            "lon": -10.787902,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Liberia",
+            "lat": 7.001865,
+            "lon": -9.403552,
+            "radius": 60,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Burkina Faso",
+            "lat": 12.369084,
+            "lon": -1.538471,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Burkina Faso",
+            "lat": 12.066004,
+            "lon": 0.19617,
+            "radius": 50,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Democratic Republic of the Congo",
+            "lat": -4.416767,
+            "lon": 15.333833,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Democratic Republic of the Congo",
+            "lat": 0.478539,
+            "lon": 25.182716,
             "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Ethiopia",
+            "lat": 9.022628,
+            "lon": 38.72952,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Ethiopia",
+            "lat": 7.971289,
+            "lon": 36.664565,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Nauru",
+            "lat": -0.531711,
+            "lon": 166.93097,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Malta",
+            "lat": 35.881473,
+            "lon": 14.454551,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Malta",
+            "lat": 36.034287,
+            "lon": 14.275883,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Lichtenstein",
+            "lat": 47.159095,
+            "lon": 9.545272,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "R\u00e9union",
+            "lat": -21.094152,
+            "lon": 55.516889,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Caymon Islands",
+            "lat": 19.288434,
+            "lon": -81.307805,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Palestine",
+            "lat": 31.853506,
+            "lon": 35.225899,
+            "radius": 50,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Fiji",
+            "lat": -17.71288,
+            "lon": 177.64309,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "French Polynesia",
+            "lat": -17.573076,
+            "lon": -149.572522,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Rwuanda",
+            "lat": -1.949348,
+            "lon": 30.065131,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Rwuanda",
+            "lat": -2.440093,
+            "lon": 29.511728,
+            "radius": 60,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Trinidad and Tobago",
+            "lat": 10.576565,
+            "lon": -61.454349,
+            "radius": 60,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Vatican City",
+            "lat": 41.90335,
+            "lon": 12.455323,
+            "radius": 5,
             "numberOfImages": 100,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Angola",
+            "lat": -8.8893,
+            "lon": 13.259714,
+            "radius": 30,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Angola",
+            "lat": -10.857061,
+            "lon": 14.92292,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Bolivia",
+            "lat": -17.405804,
+            "lon": -66.140864,
+            "radius": 30,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Bolivia",
+            "lat": 17.81907,
+            "lon": -63.158852,
+            "radius": 30,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Bolivia",
+            "lat": -18.190837,
+            "lon": -65.140425,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Niger",
+            "lat": 14.930631,
+            "lon": 8.891166,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Niger",
+            "lat": 13.30056,
+            "lon": 12.585866,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Madagascar",
+            "lat": -18.946351,
+            "lon": 47.501516,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Cambodia",
+            "lat": 11.505057,
+            "lon": 104.933649,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         }
     ]
 }

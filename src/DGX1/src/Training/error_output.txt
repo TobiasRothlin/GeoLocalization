@@ -1,3 +1,0 @@
-Error opening image: /home/tobias.rothlin/data/GeoDataset/Train/Batch_741/_Bkgic7JtCaaMGrgw6kukQ.jpg
-Error opening image: /home/tobias.rothlin/data/GeoDataset/Train/Batch_1054/Ek08yvVCR1tXrD4ZSx59CA.jpg
-Error opening image: /home/tobias.rothlin/data/GeoDataset/Train/Batch_318/yOCOTojshHsfJd0g5B7jPP.jpg

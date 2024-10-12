@@ -13,6 +13,9 @@ import json
 from Dataset import GeoLocalizationDataset
 from torch.utils.data import DataLoader
 from Model import GeoLocalizationModel
+from VisualizeModelEmbeddings import visualize_model_embeddings
+
+from transformers import CLIPConfig, CLIPVisionConfig, CLIPProcessor
 
 import matplotlib.pyplot as plt
 
@@ -47,7 +50,7 @@ def checkCuda():
 
 
 if __name__ == '__main__':
-    CHECK_IMAGE_FILES = True
+    CHECK_IMAGE_FILES = False
 
     device = checkCuda()
 
@@ -56,18 +59,22 @@ if __name__ == '__main__':
 
     for config in configs["Runs"]:
         # Create the dataset
-        # train_dataset = GeoLocalizationDataset(TRAIN_DATA_FOLDER)
+
         test_dataset = GeoLocalizationDataset(TEST_DATA_FOLDER,
                                             image_width=config["ImageWidth"],
                                             image_height=config["ImageHeight"],
                                             use_center_crop=config["UseCenterCrop"],
-                                            check_images=CHECK_IMAGE_FILES)
+                                            check_images=CHECK_IMAGE_FILES,
+                                            image_mean=config["ImageMean"],
+                                            image_std=config["ImageStd"])
         
         train_dataset = GeoLocalizationDataset(TRAIN_DATA_FOLDER,
-                                                image_width=config["ImageWidth"],
-                                                image_height=config["ImageHeight"],
-                                                use_center_crop=config["UseCenterCrop"],
-                                                check_images=CHECK_IMAGE_FILES)
+                                               image_width=config["ImageWidth"],
+                                               image_height=config["ImageHeight"],
+                                               use_center_crop=config["UseCenterCrop"],
+                                               check_images=CHECK_IMAGE_FILES,
+                                               image_mean=config["ImageMean"],
+                                               image_std=config["ImageStd"])
         
         # Create the dataloader
         train_loader = DataLoader(train_dataset, batch_size=config["TrainBatchSize"], shuffle=True,num_workers=config["NumWorkers"],persistent_workers=config["PersistantWorkers"], prefetch_factor=config["PrefetchFactor"])
@@ -76,13 +83,8 @@ if __name__ == '__main__':
 
         model = GeoLocalizationModel(config["BaseModel"],device)
 
-        output_list = []
-
-        for batch in tqdm(train_loader, desc="Training"):
-            image, label = batch
-            device_image = image.to(device)
-
-            output = model(device_image)
+        visualize_model_embeddings(model, train_dataset, device,config["RunName"]+"_train",number_of_samples=100_000)
+        
             
             
             
