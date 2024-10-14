@@ -512,6 +512,225 @@
             "numberOfImages": 2000,
             "DidDownload": true,
             "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Uruguay",
+            "lat": -34.900932,
+            "lon": -56.174721,
+            "radius": 20,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Uruguay",
+            "lat": -34.127396,
+            "lon": -55.817387,
+            "radius": 50,
+            "numberOfImages": 200,
+            "DidDownload": true,
+            "IamgesDownloaded": 200
+        },
+        {
+            "_country": "Fulkland Islands",
+            "lat": -51.695634,
+            "lon": -57.874275,
+            "radius": 50,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Fulkland Islands",
+            "lat": -51.828423,
+            "lon": -58.39223,
+            "radius": 50,
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Fulkland Islands",
+            "lat": -51.82873,
+            "lon": -58.977974,
+            "radius": 50,
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Iraq",
+            "lat": 36.158778,
+            "lon": 44.00657,
+            "radius": 50,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Iraq",
+            "lat": 33.287536,
+            "lon": 44.379992,
+            "radius": 30,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 657
+        },
+        {
+            "_country": "Iraq",
+            "lat": 30.530095,
+            "lon": 47.743025,
+            "radius": 50,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Egypt",
+            "lat": 29.977544,
+            "lon": 31.225832,
+            "radius": 40,
+            "numberOfImages": 2000,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
+        {
+            "_country": "Egypt",
+            "lat": 27.281367,
+            "lon": 33.681808,
+            "radius": 60,
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Egypt",
+            "lat": 25.587933,
+            "lon": 32.671989,
+            "radius": 70,
+            "numberOfImages": 100,
+            "DidDownload": true,
+            "IamgesDownloaded": 100
+        },
+        {
+            "_country": "Oman",
+            "lat": 23.588682,
+            "lon": 58.419218,
+            "radius": 30,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Oman",
+            "lat": 22.913962,
+            "lon": 57.54372,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Oman",
+            "lat": 17.45315,
+            "lon": 53.949846,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Sir Lanka",
+            "lat": 6.842682,
+            "lon": 79.998312,
+            "radius": 30,
+            "numberOfImages": 1500,
+            "DidDownload": true,
+            "IamgesDownloaded": 1500
+        },
+        {
+            "_country": "Sir Lanka",
+            "lat": 7.329645,
+            "lon": 80.05211,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Ghana",
+            "lat": 5.568662,
+            "lon": -0.210206,
+            "radius": 30,
+            "numberOfImages": 1200,
+            "DidDownload": true,
+            "IamgesDownloaded": 1200
+        },
+        {
+            "_country": "Ghana",
+            "lat": 6.886444,
+            "lon": 0.308029,
+            "radius": 70,
+            "numberOfImages": 800,
+            "DidDownload": true,
+            "IamgesDownloaded": 800
+        },
+        {
+            "_country": "Tunisia",
+            "lat": 36.759123,
+            "lon": 10.172535,
+            "radius": 30,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Tunisia",
+            "lat": 34.839535,
+            "lon": 10.694228,
+            "radius": 50,
+            "numberOfImages": 500,
+            "DidDownload": false
+        },
+        {
+            "_country": "Tunisia",
+            "lat": 35.237723,
+            "lon": 8.852284,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": false
+        },
+        {
+            "_country": "Lebanon",
+            "lat": 33.880002,
+            "lon": 35.511389,
+            "radius": 80,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Kazaakhstan",
+            "lat": 51.080265,
+            "lon": 71.373775,
+            "radius": 30,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Kazaakhstan",
+            "lat": 42.869809,
+            "lon": 71.291013,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": false
+        },
+        {
+            "_country": "Kazaakhstan",
+            "lat": 43.455311,
+            "lon": 76.905192,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": false
         }
     ]
 }

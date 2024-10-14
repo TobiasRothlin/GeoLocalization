@@ -15,6 +15,22 @@ GeoLocalization is a project aimed at providing accurate geographical location s
     - Code to process and clean the data
     - Code to generate features from the data
 
+## Usefull Commands
+- Start new TMUX session:
+    ```bash
+    tmux new -s <session_name>
+    ```
+
+- Attach to existing TMUX session:
+    ```bash
+    tmux attach -t <session_name>
+    ```
+
+- Stop Apptainer container:
+    ```bash
+    apptainer instance stop <session_name>
+    ```
+
 
 ## References
 - GeoCLIP: clip-inspired alignment between locations and images for effective worldwide geo-localization

@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     for config in download_data["ToDownload"]:
         if config["DidDownload"]:
-            print(f"Skipping {config['lat']}, {config['lon']}")
+            print(f"Skipping {config['_country']} {config['lat']}, {config['lon']}")
             continue
 
         remove_cached_files()
@@ -74,8 +74,8 @@ if __name__ == "__main__":
         except Exception as e:
             config["DidDownload"] = False
             config["IamgesDownloaded"] = 0
-            print(f"Failed to download data for {lat}, {lon}")
-            print(e.with_traceback())
+            print(f"Failed to download data for {config['_country']} {lat}, {lon}")
+            print(e.with_traceback(sys.exc_info()[2]))
         
         with open(DOWNLOAD_JSON_PATH, "w") as f:
             json.dump(download_data, f, indent=4)

@@ -50,7 +50,7 @@ def checkCuda():
 
 
 if __name__ == '__main__':
-    CHECK_IMAGE_FILES = False
+    CHECK_IMAGE_FILES = True
 
     device = checkCuda()
 

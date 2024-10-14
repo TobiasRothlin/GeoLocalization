@@ -175,6 +175,41 @@ def getLatLongFiles(files, num_threads=64):
     return results
 
 
+def getLatLongByCountry(json_path):
+    with open(json_path, "r") as f:
+        data = json.load(f)
+        return data["lat"], data["lon"], data["country"]
+    
+def getLatLongByCountryBatch(batch_file):
+    results = {}
+    for file in batch_file:
+        lat, lon, country = getLatLongByCountry(file)
+        if country in results:
+            results[country].append((lat, lon))
+        else:
+            results[country] = [(lat, lon)]
+    return results
+
+def getLatLongByCountryFiles(files, num_threads=64):
+    batches = [files[i:i + num_threads] for i in range(0, len(files), num_threads)]
+    results = {}
+
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        futures = [executor.submit(getLatLongByCountryBatch, batch) for batch in tqdm(batches, desc="Starting Getting LatLong By Country")]
+        for future in tqdm(as_completed(futures), desc="Getting LatLong By Country",total=len(futures)):
+            try:
+                result = future.result()
+                for country, latlong in result.items():
+                    if country in results:
+                        results[country].extend(latlong)
+                    else:
+                        results[country] = latlong
+            except Exception as e:
+                print(f"Error in getLatLongByCountryFiles: {e.with_traceback()}")
+    
+    return results
+
+
 def sort_data(data):
     sorted_items = sorted(data.items(), key=lambda item: item[1], reverse=True)
     sorted_keys = [item[0] for item in sorted_items]
@@ -274,89 +309,74 @@ def doVisualizaiton(trian_files,test_files):
 
 
         # Scatter Map showing the distribution of the data
-        print("Getting LatLong")
+        train_position_by_country = getLatLongByCountryFiles(trian_files)
+        test_position_by_country = getLatLongByCountryFiles(test_files)
 
-        train_latlong = getLatLongFiles(trian_files)
-        test_latlong = getLatLongFiles(test_files)
+        for country, latlong in train_position_by_country.items():
+            lat, lon = zip(*latlong)
+            fig = go.Figure(data=go.Scattergeo(
+                lon = lon,
+                lat = lat,
+                mode = 'markers',
+                marker_color = "blue",
+                text = country
+            ))
+            fig.update_geos(projection_type="natural earth")
+            fig.update_layout(title=f"Train Data Distribution in {country}")
+            clean_country = country.replace(" ", "_").replace(",", "_").replace(".", "_").replace("(", "_").replace(")", "_").replace("/", "_").replace("\\", "_").replace(":", "_").replace(" ", "")
+            mlflow.log_figure(fig, f"Train/{clean_country}_Distribution.html")
 
-        print(train_latlong[:10])
-        print(test_latlong[:10])
+            # Heat map
+            df = pd.DataFrame({"lat": lat, "lon": lon})
+            fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=0, lon=0), zoom=0,
+                                    mapbox_style="stamen-terrain")
+            fig.update_layout(title=f"Train Data Distribution in {country}")
+            mlflow.log_figure(fig, f"Train/{clean_country}_HeatMap.html")
 
+            # Box plot
+            fig = px.box(df, y="lat")
+            fig.update_layout(title=f"Train Data Distribution in {country} Latitude")
+            mlflow.log_figure(fig, f"Train/{clean_country}_Lat_BoxPlot.html")
 
-        fig = go.Figure()
-        fig.add_trace(go.Scattergeo(
-            lon=[x[1] for x in train_latlong],
-            lat=[x[0] for x in train_latlong],
-            mode='markers',
-            marker=dict(
-                size=8,
-                opacity=0.8,
-                reversescale=True,
-                autocolorscale=False,
-                symbol='circle',
-                line=dict(
-                    width=1,
-                    color='rgba(102, 102, 102)'
-                ),
-                colorscale='Blues',
-                cmin=0,
-                color=[],
-                cmax=0,
-                colorbar=dict(
-                    title="Train Data"
-                )
-            )
-        ))
-
-        print("Ploting the Training Data")
-        mlflow.log_figure(fig, "Train_DataDistribution.html")
-        fig.write_html("./Train_DataDistribution.html")
-
-
-        fig = go.Figure()
-        fig.add_trace(go.Scattergeo(
-            lon=[x[1] for x in test_latlong],
-            lat=[x[0] for x in test_latlong],
-            mode='markers',
-            marker=dict(
-                size=8,
-                opacity=0.8,
-                reversescale=True,
-                autocolorscale=False,
-                symbol='circle',
-                line=dict(
-                    width=1,
-                    color='rgba(102, 102, 102)'
-                ),
-                colorscale='Blues',
-                cmin=0,
-                color=[],
-                cmax=0,
-                colorbar=dict(
-                    title="Test Data"
-                )
-            )
-        ))
-
-        mlflow.log_figure(fig, "Test_DataDistribution.html")
-
-        print("Ploting the Training Data on a heat map")
-        # Heat Map showing the distribution of the data
-        fig = go.Figure()
-        fig.add_trace(go.Densitymapbox(lat=[x[0] for x in train_latlong], lon=[x[1] for x in train_latlong], radius=10))
-        fig.update_layout(mapbox_style="stamen-terrain", mapbox_center_lon=0)
-        mlflow.log_figure(fig, "Train_HeatMap.html")
-        fig.write_html("./Train_HeatMap.html")
-
-
-        fig = go.Figure()
-        fig.add_trace(go.Densitymapbox(lat=[x[0] for x in test_latlong], lon=[x[1] for x in test_latlong], radius=10))
-        fig.update_layout(mapbox_style="stamen-terrain", mapbox_center_lon=0)
-        mlflow.log_figure(fig, "Test_HeatMap.html")
+            fig = px.box(df, y="lon")
+            fig.update_layout(title=f"Train Data Distribution in {country} Longitude")
+            mlflow.log_figure(fig, f"Train/{clean_country}_Lon_BoxPlot.html")
 
 
 
 
+        for country, latlong in test_position_by_country.items():
+            lat, lon = zip(*latlong)
+            fig = go.Figure(data=go.Scattergeo(
+                lon = lon,
+                lat = lat,
+                mode = 'markers',
+                marker_color = "blue",
+                text = country
+            ))
+            fig.update_geos(projection_type="natural earth")
+            fig.update_layout(title=f"Test Data Distribution in {country}")
+            clean_country = country.replace(" ", "_").replace(",", "_").replace(".", "_").replace("(", "_").replace(")", "_").replace("/", "_").replace("\\", "_").replace(":", "_").replace(" ", "")
+            mlflow.log_figure(fig, f"Test/{clean_country}_Distribution.html")
 
+            # Heat map
+            df = pd.DataFrame({"lat": lat, "lon": lon})
+            fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=0, lon=0), zoom=0,
+                                    mapbox_style="stamen-terrain")
+            fig.update_layout(title=f"Test Data Distribution in {country}")
+            mlflow.log_figure(fig, f"Test/{clean_country}_HeatMap.html")
+
+            # Box plot
+            fig = px.box(df, y="lat")
+            fig.update_layout(title=f"Test Data Distribution in {country} Latitude")
+            mlflow.log_figure(fig, f"Test/{clean_country}_Lat_BoxPlot.html")
+
+            fig = px.box(df, y="lon")
+            fig.update_layout(title=f"Test Data Distribution in {country} Longitude")
+            mlflow.log_figure(fig, f"Test/{clean_country}_Lon_BoxPlot.html")
+            
+
+
+    
 
 

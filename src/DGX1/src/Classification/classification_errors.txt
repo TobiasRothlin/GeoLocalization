@@ -2,3 +2,12 @@
 /home/tobias.rothlin/data/GeoDataset/Train/Batch_429/ypkbeBetBLdiKzH1h87S-w.json: Expecting value: line 1 column 1 (char 0)
 /home/tobias.rothlin/data/GeoDataset/Train/Batch_1086/uSTrrC4LG4PAh9zahU4jyg.json: Expecting value: line 1 column 1 (char 0)
 /home/tobias.rothlin/data/GeoDataset/Train/Batch_910/WbnnGqiDOZbRWwU7KoSxfK.json: Expecting value: line 1 column 1 (char 0)
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1556/mapillary_21468056_-71137605_1160.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1556/mapillary_21468056_-71137605_1148.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1592/mapillary_-1771288_17764309_1204.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1592/mapillary_-1771288_17764309_969.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1592/mapillary_-1771288_17764309_1486.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1592/mapillary_-1771288_17764309_1302.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1579/mapillary_12369084_-1538471_875.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1534/mapillary_12631933_-8010573_1994.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1574/mapillary_37894019_58454253_1955.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
