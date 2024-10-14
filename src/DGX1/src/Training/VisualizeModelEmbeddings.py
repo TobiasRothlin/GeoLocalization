@@ -34,10 +34,10 @@ def visualize_model_embeddings(model, dataset, device,name=None,number_of_sample
         labels.append(label)
     
 
-    with open(f"{name if name else ''}e_vectors.tsv", "w") as f:
+    with open(f"{name if name else ''}_vectors.tsv", "w") as f:
         for element in embeddings:
             f.write("\t".join([str(x) for x in element[0][0]])+"\n")
 
-    with open(f"{name if name else ''}e_metadata.tsv", "w") as f:
+    with open(f"{name if name else ''}_metadata.tsv", "w") as f:
         for label in labels:
             f.write(label+"\n")

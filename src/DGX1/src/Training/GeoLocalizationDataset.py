@@ -24,7 +24,8 @@ class GeoLocalizationDataset(Dataset):
                  augmentation=None,
                  use_center_crop=False,
                  error_output="./error_output.txt",
-                 check_images=False):
+                 check_images=False,
+                 use_equal_earth_projection=False):
         
         """
         :param folder: The folder containing the images and the labels
@@ -109,6 +110,9 @@ class GeoLocalizationDataset(Dataset):
             image = self.augmentation_pipeline(image)
         return image
     
+    
+
+    
     def __load_image(self, image_path):
         """
         Load the image
@@ -182,8 +186,4 @@ class GeoLocalizationDataset(Dataset):
                 print(f"Error loading json file: {json_path}")
                 raise e
 
-
-        
         return image, raw_data["country"]
-    
-    

@@ -690,7 +690,8 @@
             "lon": 10.694228,
             "radius": 50,
             "numberOfImages": 500,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         },
         {
             "_country": "Tunisia",
@@ -698,7 +699,8 @@
             "lon": 8.852284,
             "radius": 70,
             "numberOfImages": 500,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         },
         {
             "_country": "Lebanon",
@@ -706,7 +708,8 @@
             "lon": 35.511389,
             "radius": 80,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
             "_country": "Kazaakhstan",
@@ -714,7 +717,8 @@
             "lon": 71.373775,
             "radius": 30,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Kazaakhstan",
@@ -722,7 +726,8 @@
             "lon": 71.291013,
             "radius": 70,
             "numberOfImages": 500,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         },
         {
             "_country": "Kazaakhstan",

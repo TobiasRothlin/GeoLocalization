@@ -10,12 +10,11 @@ from random import randint
 
 import json
 
-from Dataset import GeoLocalizationDataset
+from GeoLocalizationDataset import GeoLocalizationDataset
 from torch.utils.data import DataLoader
 from Model import GeoLocalizationModel
-from VisualizeModelEmbeddings import visualize_model_embeddings
 
-from transformers import CLIPConfig, CLIPVisionConfig, CLIPProcessor
+from torchsummary import summary
 
 import matplotlib.pyplot as plt
 
@@ -50,7 +49,7 @@ def checkCuda():
 
 
 if __name__ == '__main__':
-    CHECK_IMAGE_FILES = True
+    CHECK_IMAGE_FILES = False
 
     device = checkCuda()
 
@@ -81,30 +80,63 @@ if __name__ == '__main__':
         test_loader = DataLoader(test_dataset, batch_size=config["TestBatchSize"], shuffle=True,num_workers=config["NumWorkers"])
 
 
-        model = GeoLocalizationModel(config["BaseModel"],device)
+        model = GeoLocalizationModel(config["BaseModel"])
 
-        visualize_model_embeddings(model, train_dataset, device,config["RunName"]+"_train",number_of_samples=100_000)
-        
+        summary(model, (3, config["ImageHeight"], config["ImageWidth"]))
+
+        model.to(device)
+
+
+        # Train the model
+
+        for epoch in range(config["Epochs"]):
+            print(f"Epoch {epoch+1}/{config['Epochs']}")
+            model.train()
+
+            lat_loss = 0
+            lon_loss = 0
+
+            for i, (images, labels) in enumerate(tqdm(train_loader, desc="Training", postfix=f"Loss: {lat_loss:.2f},{lon_loss:.2f}")):
+                images = images.to(device)
+                labels = labels.to(device)
+
+                optimizer = torch.optim.Adam(model.parameters(), lr=config["LearningRate"])
+
+                optimizer.zero_grad()
+
+                outputs = model(images)
+
+                loss = torch.nn.functional.mean_squared_error(outputs, labels)
+                
+                loss.backward()
+
+                optimizer.step()
+
+            model.eval()
+            with torch.no_grad():
+                lat_loss = 0
+                lon_loss = 0
+
+                for i, (images, labels) in enumerate(tqdm(test_loader, desc="Testing",postfix=f"Loss: {lat_loss:.2f},{lon_loss:.2f}")):
+                    images = images.to(device)
+                    labels = labels.to(device)
+
+                    outputs = model(images)
+
+                    loss = torch.nn.functional.mean_squared_error(outputs, labels)
+
+                    lat_loss += loss[0].item()
+                    lon_loss += loss[1].item()
+
+
+            # Save model Checkpoint
+            torch.save(model.state_dict(), f"./model_{epoch}.pt")
+
             
-            
-            
 
+
+
+
+
+                    
         
-
-
-        
-
-
-
-
-    
-    
-
-    
-
-
-
-
-    
-    
-    

@@ -1,23 +1,59 @@
 from transformers import CLIPProcessor, CLIPModel
 from torch.nn import Module
 from torchsummary import summary
+import torch
+
+class GeoLocalizationRegressionHead(Module):
+    
+        def __init__(self):
+            super(GeoLocalizationRegressionHead, self).__init__()
+    
+            self.ff_layers = torch.nn.ModuleList([
+                torch.nn.Linear(1024, 256),
+                torch.nn.ReLU(),
+                torch.nn.Linear(256, 128),
+                torch.nn.ReLU(),
+                torch.nn.Linear(128, 2)
+            ])
+    
+            self.apply(self._init_weights)
+            
+    
+        def _init_weights(self, m):
+            if isinstance(m, torch.nn.Linear):
+                torch.nn.init.xavier_uniform_(m.weight)
+                m.bias.data.fill_(0.01)
+
+        def forward(self, x):
+            for layer in self.ff_layers:
+                x = layer(x)
+            return x
+        
+        def to(self, *args, **kwargs):
+            self = super().to(*args, **kwargs)
+            self.ff_layers = [layer.to(*args, **kwargs) for layer in self.ff_layers]
+            return self
 
 class GeoLocalizationModel(Module):
 
-    def __init__(self, base_model_name,device):
+    def __init__(self, base_model_name):
         super(GeoLocalizationModel, self).__init__()
 
-        self.device = device
+        base_model = CLIPModel.from_pretrained(base_model_name)
+        self.vision_model = base_model.vision_model
 
-        self.base_model = CLIPModel.from_pretrained(base_model_name)
+        self.reg_head = GeoLocalizationRegressionHead()
+        
 
-        self.vision_model = self.base_model.vision_model
-        print(100*"=")
-        print(f"Vision model: {base_model_name}")
-        summary(self.vision_model, (3, 336, 336))
 
-        self.vision_model.to(device)
+    def to(self, *args, **kwargs):
+        self = super().to(*args, **kwargs)
+        self.vision_model = self.vision_model.to(*args, **kwargs)
+        self.reg_head = self.reg_head.to(*args, **kwargs)
+        return self
         
     def forward(self, x):
-        x = self.vision_model(x)
-        return x.last_hidden_state
+        x = self.vision_model(x).last_hidden_state
+        x = x[:, 0, :]
+        x = self.reg_head(x)
+        return x
