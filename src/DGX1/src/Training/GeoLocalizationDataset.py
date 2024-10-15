@@ -71,6 +71,12 @@ class GeoLocalizationDataset(Dataset):
             if image is not None and label is not None:
                 self.data.append((image, label))
 
+        if len(self.data) != len(self.label_paths):
+            print("Some data was not loaded")
+            print(f"Loaded: {len(self.data)}")
+            print(f"Total: {len(self.label_paths)}")
+            
+
 
     def __load_data(self,json_file):
         """

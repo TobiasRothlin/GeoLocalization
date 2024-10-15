@@ -13,8 +13,13 @@ import json
 
 from GeoLocalizationDataset import GeoLocalizationDataset
 from torch.utils.data import DataLoader
+from torch.utils.data.distributed import DistributedSampler
 from Model import GeoLocalizationModel
 from HaversineLoss import HaversineLoss
+from Trainer import Trainer, ddp_setup
+
+from torch.distributed import init_process_group, destroy_process_group
+import torch.multiprocessing as mp
 
 from torchsummary import summary
 
@@ -49,100 +54,72 @@ def checkCuda():
 
     return "cuda" if torch.cuda.is_available() else "cpu"
 
+def run(rank,world_size,config,test_dataset,train_dataset,model,loss_function):
+    ddp_setup(rank, world_size)
+    # Create the dataloader
+    train_loader = DataLoader(train_dataset, batch_size=config["TrainingConfig"]["TrainBatchSize"], shuffle=False,num_workers=config["TrainingConfig"]["NumWorkers"],persistent_workers=config["TrainingConfig"]["PersistantWorkers"], prefetch_factor=config["TrainingConfig"]["PrefetchFactor"], sampler=DistributedSampler(train_dataset),pin_memory=True)
+    test_loader = DataLoader(test_dataset, batch_size=config["TrainingConfig"]["TestBatchSize"], shuffle=True,num_workers=config["TrainingConfig"]["NumWorkers"])
+
+    # Train the model
+
+    trainer = Trainer(model, 
+                        train_loader, 
+                        test_loader, 
+                        "Adam", 
+                        config["TrainingConfig"]["SaveEvery"], 
+                        config["TrainingConfig"]["SnapshotPath"], 
+                        loss_function, 
+                        rank,
+                        config["TrainingConfig"]["GradientAccumulationSteps"])
+    
+
+    trainer.train(config["TrainingConfig"]["Epochs"])
+
+    destroy_process_group()
 
 
 if __name__ == '__main__':
-    CHECK_IMAGE_FILES = False
+    
 
     device = checkCuda()
 
     with open("./config.json", "r") as f:
         configs = json.load(f)
 
+    
+
     for config in configs["Runs"]:
-        # Create the dataset
+        CHECK_IMAGE_FILES = False
 
         test_dataset = GeoLocalizationDataset(TEST_DATA_FOLDER,
-                                            image_width=config["ImageWidth"],
-                                            image_height=config["ImageHeight"],
-                                            use_center_crop=config["UseCenterCrop"],
+                                            image_width=config["ModelConfig"]["ImageWidth"],
+                                            image_height=config["ModelConfig"]["ImageHeight"],
+                                            use_center_crop=config["ModelConfig"]["UseCenterCrop"],
                                             check_images=CHECK_IMAGE_FILES,
-                                            image_mean=config["ImageMean"],
-                                            image_std=config["ImageStd"])
+                                            image_mean=config["ModelConfig"]["ImageMean"],
+                                            image_std=config["ModelConfig"]["ImageStd"])
         
         train_dataset = GeoLocalizationDataset(TRAIN_DATA_FOLDER,
-                                               image_width=config["ImageWidth"],
-                                               image_height=config["ImageHeight"],
-                                               use_center_crop=config["UseCenterCrop"],
-                                               check_images=CHECK_IMAGE_FILES,
-                                               image_mean=config["ImageMean"],
-                                               image_std=config["ImageStd"])
+                                            image_width=config["ModelConfig"]["ImageWidth"],
+                                            image_height=config["ModelConfig"]["ImageHeight"],
+                                            use_center_crop=config["ModelConfig"]["UseCenterCrop"],
+                                            check_images=CHECK_IMAGE_FILES,
+                                            image_mean=config["ModelConfig"]["ImageMean"],
+                                            image_std=config["ModelConfig"]["ImageStd"])
         
-        # Create the dataloader
-        train_loader = DataLoader(train_dataset, batch_size=config["TrainBatchSize"], shuffle=True,num_workers=config["NumWorkers"],persistent_workers=config["PersistantWorkers"], prefetch_factor=config["PrefetchFactor"])
-        test_loader = DataLoader(test_dataset, batch_size=config["TestBatchSize"], shuffle=True,num_workers=config["NumWorkers"])
+        model = GeoLocalizationModel(config["ModelConfig"]["BaseModel"])
 
-
-        model = GeoLocalizationModel(config["BaseModel"])
-
-        summary(model, (3, config["ImageHeight"], config["ImageWidth"]))
-
-        model.to(device)
+        summary(model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))
 
         loss_function = HaversineLoss()
 
-
-        # Train the model
-
-        for epoch in range(config["Epochs"]):
-            print(f"Epoch {epoch+1}/{config['Epochs']}")
-            model.train()
-
-            epoch_loss = 0
-
-            progress_bar = tqdm(train_loader, desc="Training", postfix=f"Loss: {epoch_loss:.2f}")
-
-            for i, (images, labels) in enumerate(progress_bar):
-                images = images.to(device)
-                labels = labels.to(device)
-
-                optimizer = torch.optim.Adam(model.parameters(), lr=config["LearningRate"])
-
-                optimizer.zero_grad()
-
-                outputs = model(images)
-
-                loss = loss_function(outputs, labels)
-                
-                loss.backward()
-
-                optimizer.step()
-
-                epoch_loss += loss.item() / len(train_loader)
-                progress_bar.set_postfix_str(f"Loss: {epoch_loss:.2f}")
-                break
-            progress_bar.close()
-
-            model.eval()
-            with torch.no_grad():
-                test_loss = 0
-
-                for i, (images, labels) in enumerate(tqdm(test_loader, desc="Testing",postfix=f"Loss: {test_loss:.2f}")):
-                    images = images.to(device)
-                    labels = labels.to(device)
-
-                    outputs = model(images)
-
-                    loss = loss_function(outputs, labels)
-
-                    test_loss += loss.item()
-                    break
-
-            # Save model Checkpoint
-            torch.save(model.state_dict(), f"./model_{epoch}.pt")
+        # Create the dataset
+        mp.spawn(run, args=(torch.cuda.device_count(),config,test_dataset,train_dataset,model,loss_function), nprocs=torch.cuda.device_count())
 
 
+        
 
+        
 
 
 

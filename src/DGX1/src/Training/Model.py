@@ -9,7 +9,9 @@ class GeoLocalizationRegressionHead(Module):
             super(GeoLocalizationRegressionHead, self).__init__()
     
             self.ff_layers = torch.nn.ModuleList([
-                torch.nn.Linear(1024, 256),
+                torch.nn.Linear(1024, 512),
+                torch.nn.ReLU(),
+                torch.nn.Linear(512, 256),
                 torch.nn.ReLU(),
                 torch.nn.Linear(256, 128),
                 torch.nn.ReLU(),

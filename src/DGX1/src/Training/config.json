@@ -1,29 +1,36 @@
 {
     "Runs": [
-        {   
-            "RunName": "CLIP",
-            "BaseModel": "openai/clip-vit-large-patch14-336",
-            "Discripiton": "CLIP with ViT base model",
-            "LearningRate": 0.0001,
-            "TrainBatchSize": 8,
-            "TestBatchSize": 8,
-            "Epochs": 2,
-            "ImageWidth": 336,
-            "ImageHeight": 336,
-            "UseCenterCrop": true,
-            "NumWorkers": 32,
-            "PersistantWorkers": true,
-            "PrefetchFactor": 8,
-            "ImageMean": [
-                0.48145466,
-                0.4578275,
-                0.40821073
-            ],
-            "ImageStd": [
-                0.26862954,
-                0.26130258,
-                0.27577711
-            ]
+        {
+            "ModelConfig": {
+                "RunName": "CLIP",
+                "BaseModel": "openai/clip-vit-large-patch14-336",
+                "Discripiton": "CLIP with ViT base model",
+                "ImageWidth": 336,
+                "ImageHeight": 336,
+                "UseCenterCrop": true,
+                "ImageMean": [
+                    0.48145466,
+                    0.4578275,
+                    0.40821073
+                ],
+                "ImageStd": [
+                    0.26862954,
+                    0.26130258,
+                    0.27577711
+                ]
+            },
+            "TrainingConfig": {
+                "LearningRate": 0.0001,
+                "TrainBatchSize": 3,
+                "TestBatchSize": 3,
+                "Epochs": 5,
+                "NumWorkers": 8,
+                "PersistantWorkers": true,
+                "PrefetchFactor": 8,
+                "SaveEvery": 1000,
+                "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
+                "GradientAccumulationSteps": 100
+            }
         }
     ]
 }
