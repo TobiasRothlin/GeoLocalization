@@ -98,10 +98,11 @@ if __name__ == '__main__':
             print(f"Epoch {epoch+1}/{config['Epochs']}")
             model.train()
 
-            lat_loss = 0
-            lon_loss = 0
+            epoch_loss = 0
 
-            for i, (images, labels) in enumerate(tqdm(train_loader, desc="Training", postfix=f"Loss: {lat_loss:.2f},{lon_loss:.2f}")):
+            progress_bar = tqdm(train_loader, desc="Training", postfix=f"Loss: {epoch_loss:.2f}")
+
+            for i, (images, labels) in enumerate(progress_bar):
                 images = images.to(device)
                 labels = labels.to(device)
 
@@ -117,12 +118,16 @@ if __name__ == '__main__':
 
                 optimizer.step()
 
+                epoch_loss += loss.item() / len(train_loader)
+                progress_bar.set_postfix_str(f"Loss: {epoch_loss:.2f}")
+                break
+            progress_bar.close()
+
             model.eval()
             with torch.no_grad():
-                lat_loss = 0
-                lon_loss = 0
+                test_loss = 0
 
-                for i, (images, labels) in enumerate(tqdm(test_loader, desc="Testing",postfix=f"Loss: {lat_loss:.2f},{lon_loss:.2f}")):
+                for i, (images, labels) in enumerate(tqdm(test_loader, desc="Testing",postfix=f"Loss: {test_loss:.2f}")):
                     images = images.to(device)
                     labels = labels.to(device)
 
@@ -130,14 +135,12 @@ if __name__ == '__main__':
 
                     loss = loss_function(outputs, labels)
 
-                    lat_loss += loss[0].item()
-                    lon_loss += loss[1].item()
-
+                    test_loss += loss.item()
+                    break
 
             # Save model Checkpoint
             torch.save(model.state_dict(), f"./model_{epoch}.pt")
 
-            
 
 
 

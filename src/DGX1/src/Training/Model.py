@@ -55,3 +55,6 @@ class GeoLocalizationModel(Module):
         x = x[:, 0, :]
         x = self.reg_head(x)
         return x
+    
+    def load(self, path):
+        self.load_state_dict(torch.load(path))

@@ -18,7 +18,7 @@ class HaversineLoss(torch.nn.Module):
 
         haversign = 2 * self.earth_radius * torch.asin(torch.sqrt(alpha_0 + alpha_1 * alpha_2))
 
-        return haversign
+        return torch.sum(haversign)
 
     def __radians(self, x):
         return x * (self.pi / 180)

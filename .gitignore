@@ -173,6 +173,10 @@ cython_debug/
 
 *.html
 
+# Ignore all pytorch files
+*.pth
+*.pt
+
 /GoogleStreetMapDataCollection/.googleApiKey
 /Dataset/GoogleStreetMapDataCollection/.googleApiKey
 /Dataset/.apiTokenMapBox
