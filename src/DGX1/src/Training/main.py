@@ -2,6 +2,7 @@ import torch
 import os
 import sys
 sys.path.append('/home/tobias.rothlin/GeoLocalization/src/DGX1/src/Utility')
+sys.path.append('/Users/tobiasrothlin/Documents/MSE/GeoLocalization/src/DGX1/src/Utility')
 
 from time import sleep
 
@@ -13,12 +14,14 @@ import json
 from GeoLocalizationDataset import GeoLocalizationDataset
 from torch.utils.data import DataLoader
 from Model import GeoLocalizationModel
+from HaversineLoss import HaversineLoss
 
 from torchsummary import summary
 
 import matplotlib.pyplot as plt
 
 BASE_PATH = "/home/tobias.rothlin/data/GeoDataset"
+BASE_PATH = "/Users/tobiasrothlin/Documents/MSE/Dataset"
 
 TEST_DATA_FOLDER = os.path.join(BASE_PATH, "Test")
 TRAIN_DATA_FOLDER = os.path.join(BASE_PATH, "Train")
@@ -86,6 +89,8 @@ if __name__ == '__main__':
 
         model.to(device)
 
+        loss_function = HaversineLoss()
+
 
         # Train the model
 
@@ -106,7 +111,7 @@ if __name__ == '__main__':
 
                 outputs = model(images)
 
-                loss = torch.nn.functional.mean_squared_error(outputs, labels)
+                loss = loss_function(outputs, labels)
                 
                 loss.backward()
 
@@ -123,7 +128,7 @@ if __name__ == '__main__':
 
                     outputs = model(images)
 
-                    loss = torch.nn.functional.mean_squared_error(outputs, labels)
+                    loss = loss_function(outputs, labels)
 
                     lat_loss += loss[0].item()
                     lon_loss += loss[1].item()

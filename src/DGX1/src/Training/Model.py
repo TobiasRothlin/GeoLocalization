@@ -28,11 +28,9 @@ class GeoLocalizationRegressionHead(Module):
             for layer in self.ff_layers:
                 x = layer(x)
             return x
-        
+
         def to(self, *args, **kwargs):
-            self = super().to(*args, **kwargs)
-            self.ff_layers = [layer.to(*args, **kwargs) for layer in self.ff_layers]
-            return self
+            return super().to(*args, **kwargs)
 
 class GeoLocalizationModel(Module):
 
@@ -40,8 +38,8 @@ class GeoLocalizationModel(Module):
         super(GeoLocalizationModel, self).__init__()
 
         base_model = CLIPModel.from_pretrained(base_model_name)
-        self.vision_model = base_model.vision_model
 
+        self.vision_model = base_model.vision_model
         self.reg_head = GeoLocalizationRegressionHead()
         
 
