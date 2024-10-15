@@ -735,7 +735,8 @@
             "lon": 76.905192,
             "radius": 70,
             "numberOfImages": 500,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         }
     ]
 }

@@ -21,7 +21,7 @@ from torchsummary import summary
 import matplotlib.pyplot as plt
 
 BASE_PATH = "/home/tobias.rothlin/data/GeoDataset"
-BASE_PATH = "/Users/tobiasrothlin/Documents/MSE/Dataset"
+# BASE_PATH = "/Users/tobiasrothlin/Documents/MSE/Dataset"
 
 TEST_DATA_FOLDER = os.path.join(BASE_PATH, "Test")
 TRAIN_DATA_FOLDER = os.path.join(BASE_PATH, "Train")
