@@ -737,83 +737,76 @@
             "numberOfImages": 500,
             "DidDownload": true,
             "IamgesDownloaded": 500
-        }
-        ,
+        },
         {
             "_country": "Cyprus",
-            "lat": 35.147072, 
+            "lat": 35.147072,
             "lon": 33.380799,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
-        }
-        ,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
         {
             "_country": "Qatar",
-            "lat": 25.281167,  
+            "lat": 25.281167,
             "lon": 51.348034,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
-        }
-        ,
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
+        },
         {
             "_country": "Pakistan",
-            "lat": 25.344414,   
-            "lon": 68.487830,
+            "lat": 25.344414,
+            "lon": 68.48783,
             "radius": 70,
             "numberOfImages": 1000,
             "DidDownload": false
-        }
-        ,
+        },
         {
             "_country": "Pakistan",
-            "lat": 33.676677,    
+            "lat": 33.676677,
             "lon": 72.334797,
             "radius": 70,
             "numberOfImages": 1000,
             "DidDownload": false
-        }
-        ,
+        },
         {
             "_country": "Pakistan",
-            "lat": 30.209459,    
+            "lat": 30.209459,
             "lon": 67.018173,
             "radius": 70,
             "numberOfImages": 1000,
             "DidDownload": false
-        }
-        ,
+        },
         {
             "_country": "Lybia",
-            "lat": 32.775556,     
+            "lat": 32.775556,
             "lon": 12.597855,
             "radius": 70,
             "numberOfImages": 2000,
             "DidDownload": false
-        }
-        ,
+        },
         {
             "_country": "Belaurs",
-            "lat": 53.907462,       
+            "lat": 53.907462,
             "lon": 27.566103,
             "radius": 30,
             "numberOfImages": 1000,
             "DidDownload": false
-        }
-        ,
+        },
         {
             "_country": "Belaurs",
-            "lat": 52.415765,         
+            "lat": 52.415765,
             "lon": 30.806363,
             "radius": 70,
             "numberOfImages": 500,
             "DidDownload": false
-        }
-        ,
+        },
         {
             "_country": "Belaurs",
-            "lat": 52.190641,           
+            "lat": 52.190641,
             "lon": 24.424913,
             "radius": 70,
             "numberOfImages": 500,

@@ -89,7 +89,7 @@ if __name__ == '__main__':
     
 
     for config in configs["Runs"]:
-        CHECK_IMAGE_FILES = False
+        CHECK_IMAGE_FILES = True
 
         test_dataset = GeoLocalizationDataset(TEST_DATA_FOLDER,
                                             image_width=config["ModelConfig"]["ImageWidth"],
