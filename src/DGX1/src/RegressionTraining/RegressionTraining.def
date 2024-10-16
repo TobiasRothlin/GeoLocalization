@@ -13,4 +13,4 @@ Registry: nvcr.io
     pip install -r /opt/requirements.txt
 
 %runscript
-    exec python3 /home/tobias.rothlin/GeoLocalization/src/DGX1/src/Training/main.py
+    exec python3 /home/tobias.rothlin/GeoLocalization/src/DGX1/src/RegressionTraining/main.py

@@ -95,7 +95,7 @@ class GeoLocalizationDataset(Dataset):
         if self.check_images:
             try:
                 with Image.open(image_path) as img:
-                    pass
+                    img.verify()
             except Exception as e:
                 with open(self.error_output, "a") as f:
                     f.write(f"Error opening image: {image_path}\n")

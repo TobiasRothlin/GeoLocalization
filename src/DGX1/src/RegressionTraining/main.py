@@ -11,6 +11,9 @@ from random import randint
 
 import json
 
+import dotenv
+import mlflow
+
 from GeoLocalizationDataset import GeoLocalizationDataset
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
@@ -60,35 +63,63 @@ def run(rank,world_size,config,test_dataset,train_dataset,model,loss_function):
     train_loader = DataLoader(train_dataset, batch_size=config["TrainingConfig"]["TrainBatchSize"], shuffle=False,num_workers=config["TrainingConfig"]["NumWorkers"],persistent_workers=config["TrainingConfig"]["PersistantWorkers"], prefetch_factor=config["TrainingConfig"]["PrefetchFactor"], sampler=DistributedSampler(train_dataset),pin_memory=True)
     test_loader = DataLoader(test_dataset, batch_size=config["TrainingConfig"]["TestBatchSize"], shuffle=True,num_workers=config["TrainingConfig"]["NumWorkers"])
 
+
+    if rank == 0:
+        dotenv.load_dotenv(dotenv.find_dotenv())
+
+        os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
+        os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
+
+        mlflow.set_tracking_uri("https://mlflow.infs.ch")
+        mlflow.set_experiment("GeoLocalization_Regression_Model")
+
+        mlflow.start_run()
+
+        mlflow.log_artifact("./config.json")
+        mlflow.log_artifact("./Model.py")
+        mlflow.log_param("Base Model Name", config["ModelConfig"]["BaseModel"])
+        mlflow.log_param("Run Name", config["ModelConfig"]["RunName"])
+
+        mlflow.log_params(config["TrainingConfig"])
+        mlflow.log_params(config["ModelConfig"])
+
+            
     # Train the model
 
     trainer = Trainer(model, 
                         train_loader, 
                         test_loader, 
-                        "Adam", 
                         config["TrainingConfig"]["SaveEvery"], 
                         config["TrainingConfig"]["SnapshotPath"], 
                         loss_function, 
                         rank,
-                        config["TrainingConfig"]["GradientAccumulationSteps"])
+                        config["TrainingConfig"]["GradientAccumulationSteps"],
+                        config["TrainingConfig"]["LearningRate"],
+                        config["TrainingConfig"]["Amsgrad"],
+                        config["TrainingConfig"]["WeightDecay"],
+                        config["TrainingConfig"]["Betas"],
+                        config["TrainingConfig"]["Gamma"])
     
 
     trainer.train(config["TrainingConfig"]["Epochs"])
+
+    if rank == 0:
+        mlflow.end_run()
 
     destroy_process_group()
 
 
 if __name__ == '__main__':
     
-
     device = checkCuda()
 
     with open("./config.json", "r") as f:
         configs = json.load(f)
 
-    
+
 
     for config in configs["Runs"]:
+
         CHECK_IMAGE_FILES = True
 
         test_dataset = GeoLocalizationDataset(TEST_DATA_FOLDER,

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/tobias.rothlin/GeoLocalization/src/DGX1/src/RegressionTraining/mlruns/0/113ec4004e3649a5aeb29350e5add5d4/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 113ec4004e3649a5aeb29350e5add5d4
+run_name: angry-colt-727
+run_uuid: 113ec4004e3649a5aeb29350e5add5d4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1729061967083
+status: 1
+tags: []
+user_id: tobias.rothlin

@@ -762,7 +762,8 @@
             "lon": 68.48783,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Pakistan",
