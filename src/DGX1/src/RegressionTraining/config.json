@@ -17,7 +17,8 @@
                     0.26862954,
                     0.26130258,
                     0.27577711
-                ]
+                ],
+                "StandardizationCoordinates": true
             },
             "TrainingConfig": {
                 "TrainBatchSize": 2,
@@ -36,7 +37,8 @@
                     0.9,
                     0.98
                 ],
-                "Gamma": 0.9
+                "Gamma": 0.9,
+                "LogModelOutput": true
 
             }
         }

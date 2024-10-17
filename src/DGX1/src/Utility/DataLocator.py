@@ -58,6 +58,13 @@ class DataLocator:
         with open(self.cache_file_path, "w") as f:
             json.dump(self.cache_content, f, indent=4)
 
+    def remove_cache(self):
+        if os.path.exists(self.cache_file_path):
+            os.remove(self.cache_file_path)
+            print("Cache removed")
+        else:
+            print("No cache file found")
+
     def indexAllFiles(self):
         self.folder_all_files = self.__search_files_in_directory(self.folder)
 
@@ -65,7 +72,8 @@ class DataLocator:
     def get_files(self, extension):
         return [f for f in tqdm(self.folder_all_files, desc=f"Gathering files with extention {extension}") if f.endswith(extension)]
         
-
+    def get_files_by_name(self, name):
+        return [f for f in tqdm(self.folder_all_files, desc=f"Gathering files with name {name}") if name in f]
 
     def __search_files_in_subdirectory(self, subdirectory):
         files = []

@@ -45,6 +45,9 @@ class Trainer:
         self.save_every = save_every
         self.snapshot_path = snapshot_path
 
+        self.current_loss_history = []
+        self.max_loss_history = 2*gradient_accumulation_steps
+
         if gpu_id == 0:
             if not os.path.exists(self.snapshot_path):
                 os.makedirs(self.snapshot_path)
@@ -75,6 +78,11 @@ class Trainer:
     def _run_batch(self, source, targets, batch_number):
         outputs = self.model(source)
         loss = self.loss_function(outputs, targets)
+
+        self.current_loss_history.append(loss.item())
+
+        if len(self.current_loss_history) > self.max_loss_history:
+            self.current_loss_history.pop(0)
         
         # Scale the loss by accumulation steps
         loss = loss / self.gradient_accumulation_steps
@@ -84,6 +92,8 @@ class Trainer:
         if (batch_number + 1) % self.gradient_accumulation_steps == 0:
             self.optimizer.step()
             self.optimizer.zero_grad()
+            
+        
         
         return loss.item()
 
@@ -102,11 +112,12 @@ class Trainer:
 
                 if self.gpu_id == 0:
                     mlflow.log_metric("Loss", batch_loss)
+                    mlflow.log_metric("Average Loss", sum(self.current_loss_history)/len(self.current_loss_history))
 
                     if batch_number % self.save_every == 0:
                         self.save(batch_number)
 
-                progress_bar.set_postfix_str(f"Loss: {batch_loss:.5f}")
+                progress_bar.set_postfix_str(f"Loss: {batch_loss:.5f} , Average Loss: {sum(self.current_loss_history)/len(self.current_loss_history):.5f}")
                 batch_number += 1
 
         progress_bar.close()

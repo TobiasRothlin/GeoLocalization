@@ -4,10 +4,12 @@ sys.path.append('/home/tobias.rothlin/GeoLocalization/src/DGX1/src/Utility')
 
 from DataLocator import DataLocator
 from CreateLableFile import createLableFile
-from ValidateFiles import check_json_files
+from ValidateFiles import check_json_files, check_for_valid_image_file_batched,find_dif_in_list
 from CreateMDFileRaport import createMDFileRaport
 
 from tqdm import tqdm
+
+import random
 
 BASE_PATH = "/home/tobias.rothlin/data/GeoDataset"
 
@@ -58,6 +60,8 @@ if __name__ == "__main__":
     train_files_jpg_meta = [f for f in train_files_jpg if "._" in f]
     train_files_jpeg_meta = [f for f in train_files_jpeg if "._" in f]
 
+    train_files_mean_image = dl_Train.get_files_by_name("mean_image")
+
     mdData["Test"]["JSON_META"] = len(test_files_json_meta)
     mdData["Test"]["JPG_META"] = len(test_files_jpg_meta)
     mdData["Test"]["JPEG_META"] = len(test_files_jpeg_meta)
@@ -94,6 +98,18 @@ if __name__ == "__main__":
                 mdData["Train"]["META_REMOVED"] = train_files_json_meta + train_files_jpg_meta + train_files_jpeg_meta
 
     
+    if len(train_files_mean_image) == 0:
+        print("✅ \033[32m No Mean Image files found in Train folder \033[0m")
+    else:
+        print(f"❌ \033[31m {len(train_files_mean_image)} Mean Image files found in Train folder \033[0m")
+
+        if input("Do you want to remove these files? (y/n): ").lower() == "y":
+            for f in train_files_mean_image:
+                os.remove(f)
+                print(f"    -Removed {f}")
+            
+            dl_Train.remove_cache()
+    
 
     print("\033[0m") # Reset Color
 
@@ -107,6 +123,21 @@ if __name__ == "__main__":
         print("✅ \033[32m All JSON and Image files are present in the Train folder \033[0m") # Green
     else:
         print(f"❌ \033[31m {len(train_files_json)-(len(train_files_jpg) +len(train_files_jpeg))} are missing ! \033[0m")   # Red
+
+        missing_files = find_dif_in_list(train_files_json, train_files_jpg + train_files_jpeg)
+        print(f"    Missing Files: {len(missing_files)}")
+        for f in missing_files:
+            print(f"        - {f}")
+
+        answer = input("Do you want to remove missing files? (y/n): ").lower()
+        if answer == "y":
+            for f in missing_files:
+                os.remove(f)
+                print(f"    -Removed {f}")
+            dl_Train.remove_cache()
+        else:
+            print("No files removed")
+    
 
     print("\033[37m")   # Yellow
     print(100*"-")
@@ -125,29 +156,42 @@ if __name__ == "__main__":
     else:
         print(f"❌ \033[31m {len(test_files_json)-(len(test_files_jpg) +len(test_files_jpeg))} are missing ! \033[0m")  # Red 
 
+        missing_files = find_dif_in_list(test_files_json, test_files_jpg + test_files_jpeg)
+        print(f"    Missing Files: {len(missing_files)}")
+        for f in missing_files:
+            print(f"        - {f}")
+
+        answer = input("Do you want to remove missing files? (y/n): ").lower()
+
+        if answer == "y":
+            for f in missing_files:
+                os.remove(f)
+                print(f"    -Removed {f}")
+            dl_Test.remove_cache()
+
+        else:
+            print("No files removed")
+
     print("")
     print(100*"=")
 
     print("\033[0m")    # Reset Color
     print("\033[1m\u001b[32;1mTrain Files:\033[0m")
-    checks = check_json_files(train_files_json, num_threads=64)
+    checks = check_json_files(train_files_json, num_threads=32) # Change to Train
 
     mdData["Train"]["Checks"] = checks
 
     print(100*"-")
     print("\033[0m")    # Reset Color
     print("\033[1m\u001b[34;1mTest Files:\033[0m")
-    checks = check_json_files(test_files_json, num_threads=64)
+    checks = check_json_files(test_files_json, num_threads=32)
 
     mdData["Test"]["Checks"] = checks
 
-    if dl_Test.did_update_cache:
-        createLableFile(test_files_json, os.path.join(TEST_DATA_FOLDER, "test.csv"))
-
-    if dl_Train.did_update_cache:
-        createLableFile(train_files_json, os.path.join(TRAIN_DATA_FOLDER, "train.csv"))
-
     
     createMDFileRaport(mdData)
+
+    check_for_valid_image_file_batched(test_files_jpg + test_files_jpeg, num_threads=32,remove_invalid=True)
+    check_for_valid_image_file_batched(train_files_jpg + train_files_jpeg, num_threads=32,remove_invalid=True)
     
     print("\033[0m Done")    # Reset Color

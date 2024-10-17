@@ -771,7 +771,8 @@
             "lon": 72.334797,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Pakistan",
@@ -779,7 +780,8 @@
             "lon": 67.018173,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 6
         },
         {
             "_country": "Lybia",
@@ -787,7 +789,8 @@
             "lon": 12.597855,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
             "_country": "Belaurs",
@@ -811,6 +814,142 @@
             "lon": 24.424913,
             "radius": 70,
             "numberOfImages": 500,
+            "DidDownload": false
+        },
+        {
+            "_country": "Senegal",
+            "lat": 14.746724,
+            "lon": -17.386495,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Albania",
+            "lat": 41.342388,
+            "lon": 19.648309,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Montenegro",
+            "lat": 42.397578,
+            "lon": 19.063371,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Kosovo",
+            "lat": 42.625557,
+            "lon": 21.124912,
+            "radius": 70,
+            "numberOfImages": 2000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Saudi Arabia",
+            "lat": 21.495943,
+            "lon": 39.624156,
+            "radius": 70,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Saudi Arabia",
+            "lat": 25.287985,
+            "lon": 46.024287,
+            "radius": 70,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Iran",
+            "lat": 27.947687,
+            "lon": 55.522713,
+            "radius": 70,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Russia",
+            "lat": 45.494029,
+            "lon": 41.083324,
+            "radius": 70,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Russia",
+            "lat": 55.723228,
+            "lon": 56.635897,
+            "radius": 70,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Mongoloa",
+            "lat": 47.879978,
+            "lon": 106.344407,
+            "radius": 70,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Russia",
+            "lat": 52.820652,
+            "lon": 84.267928,
+            "radius": 70,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Russia",
+            "lat": 47.699889,
+            "lon": 67.545557,
+            "radius": 90,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "China",
+            "lat": 25.192098,
+            "lon": 106.123572,
+            "radius": 90,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "China",
+            "lat": 26.732664,
+            "lon": 100.272154,
+            "radius": 90,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "China",
+            "lat": 24.893731,
+            "lon": 117.935604,
+            "radius": 90,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "China",
+            "lat": 43.333741,
+            "lon": 132.064905,
+            "radius": 90,
+            "numberOfImages": 1000,
+            "DidDownload": false
+        },
+        {
+            "_country": "Indonesia",
+            "lat": 1.186123,
+            "lon": 111.255473,
+            "radius": 90,
+            "numberOfImages": 1000,
             "DidDownload": false
         }
     ]

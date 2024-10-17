@@ -1,14 +1,23 @@
 import torch
 
 class HaversineLoss(torch.nn.Module):
-    def __init__(self):
+    def __init__(self,use_standarized_input=False):
         super(HaversineLoss, self).__init__()
         self.earth_radius = 6371.0
         self.pi = torch.acos(torch.zeros(1)).item() * 2
 
+        self.use_standarized_input = use_standarized_input
+
     def forward(self, pred_location, target_location):
+
         pred_lat, pred_lon = pred_location[:, 0], pred_location[:, 1]
         target_lat, target_lon = target_location[:, 0], target_location[:, 1]
+
+        if self.use_standarized_input:
+            pred_lat = pred_lat * 90
+            pred_lon = pred_lon * 180
+            target_lat = target_lat * 90
+            target_lon = target_lon * 180
 
         delta_lat = self.__radians(pred_lat - target_lat)
 
@@ -18,7 +27,8 @@ class HaversineLoss(torch.nn.Module):
 
         haversign = 2 * self.earth_radius * torch.asin(torch.sqrt(alpha_0 + alpha_1 * alpha_2))
 
-        return torch.sum(haversign)
+        return torch.mean(haversign)
+
 
     def __radians(self, x):
         return x * (self.pi / 180)
@@ -26,11 +36,19 @@ class HaversineLoss(torch.nn.Module):
 
 
 if __name__ == '__main__':
-    from haversine import haversine, Unit
 
-    loss = HaversineLoss()
-    pred = torch.tensor([[45.7597, 4.8422], [48.8566, 2.3522]])
-    target = torch.tensor([[48.8567, 2.3508], [48.8566, 2.3522]])
-    print(loss(pred, target))
+    loss_funciton = HaversineLoss()
 
-    print(haversine((45.7597, 4.8422), (48.8567, 2.3508), unit=Unit.KILOMETERS))
+    pred = torch.tensor([[47.217209, 8.820637],[47.217209, 8.820637]])
+    target = torch.tensor([[26.129752, -34.360865],[26.129752, -34.360865]])
+
+    dist = loss_funciton(pred, target)
+    print(dist)
+
+
+
+
+
+
+
+

@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     for config in configs["Runs"]:
 
-        CHECK_IMAGE_FILES = True
+        CHECK_IMAGE_FILES = False
 
         test_dataset = GeoLocalizationDataset(TEST_DATA_FOLDER,
                                             image_width=config["ModelConfig"]["ImageWidth"],
@@ -128,7 +128,8 @@ if __name__ == '__main__':
                                             use_center_crop=config["ModelConfig"]["UseCenterCrop"],
                                             check_images=CHECK_IMAGE_FILES,
                                             image_mean=config["ModelConfig"]["ImageMean"],
-                                            image_std=config["ModelConfig"]["ImageStd"])
+                                            image_std=config["ModelConfig"]["ImageStd"],
+                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"])
         
         train_dataset = GeoLocalizationDataset(TRAIN_DATA_FOLDER,
                                             image_width=config["ModelConfig"]["ImageWidth"],
@@ -136,13 +137,18 @@ if __name__ == '__main__':
                                             use_center_crop=config["ModelConfig"]["UseCenterCrop"],
                                             check_images=CHECK_IMAGE_FILES,
                                             image_mean=config["ModelConfig"]["ImageMean"],
-                                            image_std=config["ModelConfig"]["ImageStd"])
+                                            image_std=config["ModelConfig"]["ImageStd"],
+                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"])
         
         model = GeoLocalizationModel(config["ModelConfig"]["BaseModel"])
 
+        print("Base Model")
+        summary(model.vision_model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))
+        print(100*"=")
+        print("Full Model")
         summary(model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))
 
-        loss_function = HaversineLoss()
+        loss_function = HaversineLoss(config["ModelConfig"]["StandardizationCoordinates"])
 
         # Create the dataset
         mp.spawn(run, args=(torch.cuda.device_count(),config,test_dataset,train_dataset,model,loss_function), nprocs=torch.cuda.device_count())

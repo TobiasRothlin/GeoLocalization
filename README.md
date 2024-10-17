@@ -20,7 +20,10 @@ GeoLocalization is a project aimed at providing accurate geographical location s
     ```bash
     tmux new -s <session_name>
     ```
-
+- Kill TMUX session:
+    ```bash
+    tmux kill-session -t <session_name>
+    ```
 - Attach to existing TMUX session:
     ```bash
     tmux attach -t <session_name>

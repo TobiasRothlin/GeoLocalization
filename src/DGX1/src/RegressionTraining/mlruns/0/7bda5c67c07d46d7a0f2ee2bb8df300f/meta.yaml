@@ -1,5 +1,5 @@
 artifact_uri: file:///home/tobias.rothlin/GeoLocalization/src/DGX1/src/RegressionTraining/mlruns/0/7bda5c67c07d46d7a0f2ee2bb8df300f/artifacts
-end_time: null
+end_time: 1729065598641
 entry_point_name: ''
 experiment_id: '0'
 lifecycle_stage: active
@@ -10,6 +10,6 @@ source_name: ''
 source_type: 4
 source_version: ''
 start_time: 1729063609297
-status: 1
+status: 4
 tags: []
 user_id: tobias.rothlin

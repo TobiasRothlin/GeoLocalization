@@ -25,7 +25,7 @@ class GeoLocalizationDataset(Dataset):
                  use_center_crop=False,
                  error_output="./error_output.txt",
                  check_images=False,
-                 use_equal_earth_projection=False):
+                 standardization_coordinates=False):
         
         """
         :param folder: The folder containing the images and the labels
@@ -42,6 +42,8 @@ class GeoLocalizationDataset(Dataset):
 
         self.image_mean = image_mean
         self.image_std = image_std
+
+        self.standardization_coordinates = standardization_coordinates
 
         with open(error_output, "w") as f:
             f.write("")
@@ -63,6 +65,11 @@ class GeoLocalizationDataset(Dataset):
 
         self.locator = DataLocator(folder)
         self.label_paths = self.locator.get_files(".json")
+
+        self.min_max = {
+            "lat": (float("inf"), float("-inf")),
+            "lon": (float("inf"), float("-inf"))
+        }
         
         self.data = []
 
@@ -70,11 +77,25 @@ class GeoLocalizationDataset(Dataset):
             image, label = self.__load_data(json_file)
             if image is not None and label is not None:
                 self.data.append((image, label))
+                lat, lon = label
+                if lat < self.min_max["lat"][0]:
+                    self.min_max["lat"] = (lat, self.min_max["lat"][1])
+                if lat > self.min_max["lat"][1]:
+                    self.min_max["lat"] = (self.min_max["lat"][0], lat)
+                if lon < self.min_max["lon"][0]:
+                    self.min_max["lon"] = (lon, self.min_max["lon"][1])
+                if lon > self.min_max["lon"][1]:
+                    self.min_max["lon"] = (self.min_max["lon"][0], lon)
+
+                
 
         if len(self.data) != len(self.label_paths):
             print("Some data was not loaded")
             print(f"Loaded: {len(self.data)}")
             print(f"Total: {len(self.label_paths)}")
+
+        print(f"Min Max Lat: {self.min_max['lat']} -> {self.min_max['lat'][0]*90},{self.min_max['lat'][1]*90}")
+        print(f"Min Max Lon: {self.min_max['lon']} -> {self.min_max['lon'][0]*180},{self.min_max['lon'][1]*180}")        
             
 
 
@@ -94,17 +115,22 @@ class GeoLocalizationDataset(Dataset):
         
         if self.check_images:
             try:
-                with Image.open(image_path) as img:
-                    img.verify()
+                self.__load_image(image_path)
             except Exception as e:
                 with open(self.error_output, "a") as f:
-                    f.write(f"Error opening image: {image_path}\n")
+                    f.write(f"Error opening image: {image_path} -> {e}\n")
                 return None, None
 
         with open(json_file, "r") as f:
             raw_data = json.load(f)
 
-        return image_path, (raw_data["lat"], raw_data["lon"])
+        lat = raw_data["lat"]
+        lon = raw_data["lon"]
+
+        if self.standardization_coordinates:
+            lat = (lat - 0.0) / (90.0 - 0.0)
+            lon = (lon - 0.0) / (180.0 - 0.0)
+        return image_path, (lat, lon)
     
     def __augmentation(self, image):
         """
@@ -115,9 +141,6 @@ class GeoLocalizationDataset(Dataset):
         if self.augmentation_pipeline:
             image = self.augmentation_pipeline(image)
         return image
-    
-    
-
     
     def __load_image(self, image_path):
         """

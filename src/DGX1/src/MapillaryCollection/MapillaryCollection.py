@@ -238,15 +238,23 @@ class MapillaryInterface:
 
         for idx, sample in tqdm(enumerate(data), desc=f"Downloading Images from Mapillary @ {lat},{lon}",
                                 total=len(data)):
-            self.__get_image_by_url(sample["thumb_original_url"], image_file_name + "_" + str(idx) + ".jpg")
+            
+            try:
+                self.__get_image_by_url(sample["thumb_original_url"], image_file_name + "_" + str(idx) + ".jpg")
 
-            json_data = {
+                json_data = {
                 "lat": sample["lat"],
                 "lon": sample["lon"],
                 "img_path": image_file_name,
-            }
-            with open(json_file_name + "_" + str(idx) + ".json", "w") as f:
-                json.dump(json_data, f, indent=4)
+                "img_url": sample["thumb_original_url"]
+                }
+                with open(json_file_name + "_" + str(idx) + ".json", "w") as f:
+                    json.dump(json_data, f, indent=4)
+
+            except Exception as e:
+                with open(self.error_log, "a") as f:
+                    f.write(f"--Error: {e} in {sample}\n")
+            
 
         print(f"Downloaded {len(data)} images from Mapillary @ {lat},{lon}")
         print(f"Data saved to {output_path}")

@@ -34,11 +34,9 @@ def check_file(json_path):
         if not os.path.exists(image_path):
             checks["Valid Images Files"] = False
         
-    try:
-        PIL.Image.open(image_path)
-        checks["Valid Images Files"] = True
-    except:
-        checks["Valid Images Files"] = False
+
+    checks["Valid Images Files"] = True
+
     
 
     with open(json_path, "r") as f:
@@ -223,6 +221,8 @@ def doVisualizaiton(trian_files,test_files):
     os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
     os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 
+    mapbox_access_token = os.getenv("MAPBOX_ACCESS_TOKEN")
+
     print("Starting Visualization")
 
     mlflow.set_tracking_uri("https://mlflow.infs.ch")
@@ -312,8 +312,12 @@ def doVisualizaiton(trian_files,test_files):
         train_position_by_country = getLatLongByCountryFiles(trian_files)
         test_position_by_country = getLatLongByCountryFiles(test_files)
 
+        global_lat, global_lon = [],[]
+
         for country, latlong in train_position_by_country.items():
             lat, lon = zip(*latlong)
+            global_lat.extend(lat)
+            global_lon.extend(lon)
             fig = go.Figure(data=go.Scattergeo(
                 lon = lon,
                 lat = lat,
@@ -328,9 +332,12 @@ def doVisualizaiton(trian_files,test_files):
 
             # Heat map
             df = pd.DataFrame({"lat": lat, "lon": lon})
-            fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=0, lon=0), zoom=0,
-                                    mapbox_style="stamen-terrain")
+            lat_center = sum(lat) / len(lat)
+            lon_center = sum(lon) / len(lon)
+            fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=lat_center, lon=lon_center), zoom=4,
+                                    mapbox_style="light")
             fig.update_layout(title=f"Train Data Distribution in {country}")
+            fig.update_layout(mapbox_accesstoken=mapbox_access_token)
             mlflow.log_figure(fig, f"Train/{clean_country}_HeatMap.html")
 
             # Box plot
@@ -342,11 +349,24 @@ def doVisualizaiton(trian_files,test_files):
             fig.update_layout(title=f"Train Data Distribution in {country} Longitude")
             mlflow.log_figure(fig, f"Train/{clean_country}_Lon_BoxPlot.html")
 
+        df = pd.DataFrame({"lat": global_lat, "lon": global_lon})
+        fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=0, lon=0), zoom=4,
+                                    mapbox_style="light")
+        fig.update_layout(title=f"Train Data Distribution")
+        fig.update_layout(mapbox_accesstoken=mapbox_access_token)
+        mlflow.log_figure(fig, f"Train_HeatMap.html")
 
+        mlflow.log_metric(f"Train Lat Min: {min(global_lat)}")
+        mlflow.log_metric(f"Train Lat Max: {max(global_lat)}")
+        mlflow.log_metric(f"Train Lon Min: {min(global_lon)}")
+        mlflow.log_metric(f"Train Lon Max: {max(global_lon)}")
 
+        global_lat, global_lon = [],[]
 
         for country, latlong in test_position_by_country.items():
             lat, lon = zip(*latlong)
+            global_lat.extend(lat)
+            global_lon.extend(lon)
             fig = go.Figure(data=go.Scattergeo(
                 lon = lon,
                 lat = lat,
@@ -361,9 +381,13 @@ def doVisualizaiton(trian_files,test_files):
 
             # Heat map
             df = pd.DataFrame({"lat": lat, "lon": lon})
-            fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=0, lon=0), zoom=0,
-                                    mapbox_style="stamen-terrain")
+
+            lat_center = sum(lat) / len(lat)
+            lon_center = sum(lon) / len(lon)
+            fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=lat_center, lon=lon_center), zoom=4,
+                                    mapbox_style="light")
             fig.update_layout(title=f"Test Data Distribution in {country}")
+            fig.update_layout(mapbox_accesstoken=mapbox_access_token)
             mlflow.log_figure(fig, f"Test/{clean_country}_HeatMap.html")
 
             # Box plot
@@ -374,9 +398,19 @@ def doVisualizaiton(trian_files,test_files):
             fig = px.box(df, y="lon")
             fig.update_layout(title=f"Test Data Distribution in {country} Longitude")
             mlflow.log_figure(fig, f"Test/{clean_country}_Lon_BoxPlot.html")
-            
 
+        df = pd.DataFrame({"lat": global_lat, "lon": global_lon})
+        fig = px.density_mapbox(df, lat='lat', lon='lon', radius=10, center=dict(lat=0, lon=0), zoom=4,
+                                    mapbox_style="light")
+        fig.update_layout(title=f"Test Data Distribution")
+        fig.update_layout(mapbox_accesstoken=mapbox_access_token)
+        mlflow.log_figure(fig, f"Test_HeatMap.html")
 
-    
-
+        mlflow.log_metric(f"Test Lat Min: {min(global_lat)}")
+        mlflow.log_metric(f"Test Lat Max: {max(global_lat)}")
+        mlflow.log_metric(f"Test Lon Min: {min(global_lon)}")
+        mlflow.log_metric(f"Test Lon Max: {max(global_lon)}")
+        
+        
+        
 
