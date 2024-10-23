@@ -25,7 +25,8 @@ class GeoLocalizationDataset(Dataset):
                  use_center_crop=False,
                  error_output="./error_output.txt",
                  check_images=False,
-                 standardization_coordinates=False):
+                 standardization_coordinates=False,
+                 use_cache=True):
         
         """
         :param folder: The folder containing the images and the labels
@@ -63,7 +64,7 @@ class GeoLocalizationDataset(Dataset):
 
         self.augmentation_pipeline = augmentation
 
-        self.locator = DataLocator(folder)
+        self.locator = DataLocator(folder,use_cache=use_cache)
         self.label_paths = self.locator.get_files(".json")
 
         self.min_max = {

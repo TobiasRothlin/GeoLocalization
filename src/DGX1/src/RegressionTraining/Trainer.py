@@ -48,6 +48,8 @@ class Trainer:
         self.current_loss_history = []
         self.max_loss_history = 2*gradient_accumulation_steps
 
+        self.use_mlflow = True
+
         if gpu_id == 0:
             if not os.path.exists(self.snapshot_path):
                 os.makedirs(self.snapshot_path)
@@ -101,7 +103,7 @@ class Trainer:
     def _run_epoch(self, epoch):
         self.train_loader.sampler.set_epoch(epoch)
         batch_loss = 0
-        progress_bar = tqdm(self.train_loader, desc=f"  Epoch {epoch} on [{self.gpu_id}]", postfix=f"Loss: {batch_loss:.5f}",position=self.gpu_id )
+        progress_bar = tqdm(self.train_loader, desc=f"  Epoch {epoch} on [{self.gpu_id}]", postfix=f"Loss: {batch_loss:.5f}, Average Loss: 0",position=self.gpu_id*(epoch+1) )
         
         batch_number = 0
         self.optimizer.zero_grad()
@@ -111,11 +113,18 @@ class Trainer:
                 batch_loss = self._run_batch(images, labels,batch_number)
 
                 if self.gpu_id == 0:
-                    mlflow.log_metric("Loss", batch_loss)
-                    mlflow.log_metric("Average Loss", sum(self.current_loss_history)/len(self.current_loss_history))
+                    if self.use_mlflow:
+                        try:
+                            mlflow.log_metric("Loss", batch_loss)
+                            mlflow.log_metric("Average Loss", sum(self.current_loss_history)/len(self.current_loss_history))
+                        except Exception as e:
+                            print("Could not connect to MLFlow")
+                            print(e)
+                            self.use_mlflow = False
+                            print("MLFlow disabled")
 
                     if batch_number % self.save_every == 0:
-                        self.save(batch_number)
+                        self.save(batch_number,epoch)
 
                 progress_bar.set_postfix_str(f"Loss: {batch_loss:.5f} , Average Loss: {sum(self.current_loss_history)/len(self.current_loss_history):.5f}")
                 batch_number += 1
@@ -144,7 +153,6 @@ class Trainer:
 
         return epoch_loss
 
-
     def train(self, epochs):
         for epoch in range(epochs):
             print(f"Epoch {epoch+1}/{epochs}")
@@ -153,15 +161,15 @@ class Trainer:
 
         self.save(name=self.run_path+"/model_final.pt")
 
-    def save(self,idx=0,name=None):
+    def save(self,idx=0,epoch=0,name=None):
         if name:
             print(f"Saving model checkpoint to {name}")
-            torch.save(self.model.state_dict(), name) 
+            torch.save(self.model.module.state_dict(), name) 
             return name
         else:
             print(f"Saving model checkpoint to {self.run_path}")
-            torch.save(self.model.state_dict(), self.run_path+"/"+f"model_{idx}.pt") 
-            return self.run_path+"/"+f"model_{idx}.pt"  
+            torch.save(self.model.module.state_dict(), self.run_path+"/"+f"model_{epoch}_{idx}.pt") 
+            return self.run_path+"/"+f"model_{epoch}_{idx}.pt"  
 
         
         

@@ -798,7 +798,8 @@
             "lon": 27.566103,
             "radius": 30,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Belaurs",
@@ -806,7 +807,8 @@
             "lon": 30.806363,
             "radius": 70,
             "numberOfImages": 500,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         },
         {
             "_country": "Belaurs",
@@ -814,7 +816,8 @@
             "lon": 24.424913,
             "radius": 70,
             "numberOfImages": 500,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 500
         },
         {
             "_country": "Senegal",
@@ -822,7 +825,8 @@
             "lon": -17.386495,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
             "_country": "Albania",
@@ -830,7 +834,8 @@
             "lon": 19.648309,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
             "_country": "Montenegro",
@@ -838,7 +843,8 @@
             "lon": 19.063371,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
             "_country": "Kosovo",
@@ -846,7 +852,8 @@
             "lon": 21.124912,
             "radius": 70,
             "numberOfImages": 2000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 2000
         },
         {
             "_country": "Saudi Arabia",
@@ -854,7 +861,8 @@
             "lon": 39.624156,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Saudi Arabia",
@@ -862,7 +870,8 @@
             "lon": 46.024287,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Iran",
@@ -870,7 +879,8 @@
             "lon": 55.522713,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": false,
+            "IamgesDownloaded": 0
         },
         {
             "_country": "Russia",
@@ -878,7 +888,8 @@
             "lon": 41.083324,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Russia",
@@ -886,7 +897,8 @@
             "lon": 56.635897,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Mongoloa",
@@ -894,7 +906,8 @@
             "lon": 106.344407,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Russia",
@@ -902,7 +915,8 @@
             "lon": 84.267928,
             "radius": 70,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Russia",
@@ -910,7 +924,8 @@
             "lon": 67.545557,
             "radius": 90,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "China",
@@ -918,7 +933,8 @@
             "lon": 106.123572,
             "radius": 90,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "China",
@@ -926,7 +942,8 @@
             "lon": 100.272154,
             "radius": 90,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "China",
@@ -934,7 +951,8 @@
             "lon": 117.935604,
             "radius": 90,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "China",
@@ -942,7 +960,8 @@
             "lon": 132.064905,
             "radius": 90,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         },
         {
             "_country": "Indonesia",
@@ -950,7 +969,8 @@
             "lon": 111.255473,
             "radius": 90,
             "numberOfImages": 1000,
-            "DidDownload": false
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
         }
     ]
 }

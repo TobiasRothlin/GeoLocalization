@@ -10,9 +10,10 @@ from time import time
 
 class DataLocator:
 
-    def __init__(self, folder, number_of_threads=16):
+    def __init__(self, folder, number_of_threads=16,use_cache=True):
         self.folder = folder
         self.number_of_threads = number_of_threads
+        self.use_cache = use_cache
   
         self.folder_all_files = []
 
@@ -22,7 +23,7 @@ class DataLocator:
 
         self.did_update_cache = False
 
-        if self.load_cache():
+        if self.use_cache and self.load_cache():
             if time() - self.last_cache_update > self.max_age:
                 print("Cache is older than 24 hours")
                 print("Indexing all files")
@@ -34,7 +35,9 @@ class DataLocator:
         else:
             print("Indexing all files")
             self.indexAllFiles()
-            self.save_cache()
+            if self.use_cache:
+                self.save_cache()
+
 
 
     def load_cache(self):
@@ -79,6 +82,8 @@ class DataLocator:
         files = []
         for root, _, filenames in os.walk(subdirectory):
             for filename in filenames:
+                    if "config.json" in filename:
+                        continue
                     files.append(os.path.join(root, filename))
         return files
     
@@ -87,6 +92,11 @@ class DataLocator:
         subdirectories = [os.path.join(directory, d) for d in os.listdir(directory) if
                         os.path.isdir(os.path.join(directory, d))]
         
+        print(f"Found {len(subdirectories)} subdirectories in path {directory}")
+        
+        if len(subdirectories) == 0:
+            return self.__search_files_in_subdirectory(directory)
+
         all_files = []
         with ThreadPoolExecutor(max_workers=self.number_of_threads) as executor:
             futures = {executor.submit(self.__search_files_in_subdirectory, subdirectory): subdirectory for subdirectory

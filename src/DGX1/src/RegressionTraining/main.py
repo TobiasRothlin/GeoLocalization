@@ -66,23 +66,30 @@ def run(rank,world_size,config,test_dataset,train_dataset,model,loss_function):
 
     if rank == 0:
         dotenv.load_dotenv(dotenv.find_dotenv())
+        use_mlflow = True
 
-        os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
-        os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
+        if use_mlflow:
+            try:
+                os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
+                os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 
-        mlflow.set_tracking_uri("https://mlflow.infs.ch")
-        mlflow.set_experiment("GeoLocalization_Regression_Model")
+                mlflow.set_tracking_uri("https://mlflow.infs.ch")
+                mlflow.set_experiment("GeoLocalization_Regression_Model")
 
-        mlflow.start_run()
+                mlflow.start_run()
 
-        mlflow.log_artifact("./config.json")
-        mlflow.log_artifact("./Model.py")
-        mlflow.log_param("Base Model Name", config["ModelConfig"]["BaseModel"])
-        mlflow.log_param("Run Name", config["ModelConfig"]["RunName"])
+                mlflow.log_artifact("./config.json")
+                mlflow.log_artifact("./Model.py")
+                mlflow.log_param("Base Model Name", config["ModelConfig"]["BaseModel"])
+                mlflow.log_param("Run Name", config["ModelConfig"]["RunName"])
 
-        mlflow.log_params(config["TrainingConfig"])
-        mlflow.log_params(config["ModelConfig"])
-
+                mlflow.log_params(config["TrainingConfig"])
+                mlflow.log_params(config["ModelConfig"])
+            except Exception as e:
+                print("Could not connect to MLFlow")
+                print(e)
+                use_mlflow = False
+        
             
     # Train the model
 
@@ -104,7 +111,11 @@ def run(rank,world_size,config,test_dataset,train_dataset,model,loss_function):
     trainer.train(config["TrainingConfig"]["Epochs"])
 
     if rank == 0:
-        mlflow.end_run()
+        try:
+            mlflow.end_run()
+        except Exception as e:
+            print("Could not connect to MLFlow")
+            print(e)
 
     destroy_process_group()
 
@@ -141,6 +152,15 @@ if __name__ == '__main__':
                                             standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"])
         
         model = GeoLocalizationModel(config["ModelConfig"]["BaseModel"])
+
+        if config["ModelConfig"]["LoadFromCheckpoint"]:
+            state_dict = torch.load(config["ModelConfig"]["LoadFromCheckpoint"])
+            for key in list(state_dict.keys()):
+                print(key)
+
+            print(100*"=")
+            model.load_state_dict(state_dict)
+            print("Model loaded from: ", config["ModelConfig"]["LoadFromCheckpoint"])
 
         print("Base Model")
         summary(model.vision_model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))

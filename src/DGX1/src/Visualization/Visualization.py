@@ -176,6 +176,8 @@ def getLatLongFiles(files, num_threads=64):
 def getLatLongByCountry(json_path):
     with open(json_path, "r") as f:
         data = json.load(f)
+        if "country" not in data or "lat" not in data or "lon" not in data:
+            print(f"Error in getLatLongByCountry: {json_path}")
         return data["lat"], data["lon"], data["country"]
     
 def getLatLongByCountryBatch(batch_file):
@@ -356,10 +358,10 @@ def doVisualizaiton(trian_files,test_files):
         fig.update_layout(mapbox_accesstoken=mapbox_access_token)
         mlflow.log_figure(fig, f"Train_HeatMap.html")
 
-        mlflow.log_metric(f"Train Lat Min: {min(global_lat)}")
-        mlflow.log_metric(f"Train Lat Max: {max(global_lat)}")
-        mlflow.log_metric(f"Train Lon Min: {min(global_lon)}")
-        mlflow.log_metric(f"Train Lon Max: {max(global_lon)}")
+        mlflow.log_metric(f"Train Lat Min", min(global_lat))
+        mlflow.log_metric(f"Train Lat Max", max(global_lat))
+        mlflow.log_metric(f"Train Lon Min", min(global_lon))
+        mlflow.log_metric(f"Train Lon Max", max(global_lon))
 
         global_lat, global_lon = [],[]
 
@@ -406,10 +408,10 @@ def doVisualizaiton(trian_files,test_files):
         fig.update_layout(mapbox_accesstoken=mapbox_access_token)
         mlflow.log_figure(fig, f"Test_HeatMap.html")
 
-        mlflow.log_metric(f"Test Lat Min: {min(global_lat)}")
-        mlflow.log_metric(f"Test Lat Max: {max(global_lat)}")
-        mlflow.log_metric(f"Test Lon Min: {min(global_lon)}")
-        mlflow.log_metric(f"Test Lon Max: {max(global_lon)}")
+        mlflow.log_metric(f"Test Lat Min", min(global_lat))
+        mlflow.log_metric(f"Test Lat Max", max(global_lat))
+        mlflow.log_metric(f"Test Lon Min", min(global_lon))
+        mlflow.log_metric(f"Test Lon Max", max(global_lon))
         
         
         

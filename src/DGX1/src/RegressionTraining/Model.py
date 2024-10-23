@@ -16,7 +16,7 @@ class GeoLocalizationRegressionHead(Module):
                 torch.nn.ReLU(),
                 torch.nn.LayerNorm(256),
                 torch.nn.Linear(256, 128),
-                torch.nn.ReLU(),
+                torch.nn.Tanh(),
                 torch.nn.Linear(128, 2),
                 torch.nn.Tanh()
             ])

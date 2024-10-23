@@ -25,3 +25,5 @@
 /home/tobias.rothlin/data/GeoDataset/Train/Batch_1621/mapillary_6842682_79998312_102.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
 /home/tobias.rothlin/data/GeoDataset/Train/Batch_1534/mapillary_12631933_-8010573_1994.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
 /home/tobias.rothlin/data/GeoDataset/Train/Batch_1574/mapillary_37894019_58454253_1955.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1651/mapillary_55723228_56635897_478.json: '>=' not supported between instances of 'JpegImageFile' and 'int'
+/home/tobias.rothlin/data/GeoDataset/Train/Batch_1651/mapillary_55723228_56635897_315.json: '>=' not supported between instances of 'JpegImageFile' and 'int'

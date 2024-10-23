@@ -1,0 +1,33 @@
+{
+    "Runs": [
+        {
+            "ModelConfig": {
+                "RunName": "CLIP",
+                "BaseModel": "openai/clip-vit-large-patch14-336",
+                "StandardizationCoordinates": false
+            },
+            "TrainingConfig": {
+                "TrainBatchSize": 128,
+                "TestBatchSize": 128,
+                "Epochs": 5,
+                "NumWorkers": 1,
+                "PersistantWorkers": true,
+                "PrefetchFactor": 1,
+                "SaveEvery": 100,
+                "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
+                "GradientAccumulationSteps": 4,
+                "LearningRate": 1e-6,
+                "Amsgrad": true,
+                "WeightDecay": 1e-4,
+                "Betas": [
+                    0.9,
+                    0.98
+                ],
+                "Gamma": 0.9,
+                "Target_Gaussian_Smoothing_km": 100,
+                "Target_Gaussian_Smoothing_Decay_Rate": 0.5,
+                "Target_Gaussian_Smoothing_Step_Every": 1000
+            }
+        }
+    ]
+}
