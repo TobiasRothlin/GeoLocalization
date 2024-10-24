@@ -3,9 +3,13 @@ import os
 import mlflow   
 import dotenv
 
+import shutil
+
 from tqdm import tqdm
 
 from MovingAverage import MovingAverage
+
+from torch.utils.tensorboard import SummaryWriter
 
 
         
@@ -20,7 +24,6 @@ class Trainer:
                  loss_function,
                  optimizer,
                  lr_scheduler,
-                 gaussian_smoothing_scheduler,
                  gradient_accumulation_steps,
                  epochs,
                  device,
@@ -31,7 +34,7 @@ class Trainer:
         
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
-        self.model = model
+        self.model = model.to(device)
         self.loss_function = loss_function
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
@@ -40,12 +43,9 @@ class Trainer:
         self.log_interval = log_interval
         self.log_mlflow = log_mlflow
         self.mlflow_experiment_name = mlflow_experiment_name
-        self.gaussian_smoothing_scheduler = gaussian_smoothing_scheduler
         self.gradient_accumulation_steps = gradient_accumulation_steps
         self.snapshot_path = snapshot_path
-
-        print(f"Using scheduler: {self.gaussian_smoothing_scheduler}")
-
+        
         self.loss_average_train = MovingAverage(2*self.gradient_accumulation_steps)
         self.loss_average_test = MovingAverage(2*self.gradient_accumulation_steps)
 
@@ -61,7 +61,19 @@ class Trainer:
         
         os.makedirs(self.snapshot_folder_path)
 
+        # Copy Model.py file to snapshot folder
+        shutil.copyfile("/home/tobias.rothlin/GeoLocalization/src/DGX1/src/ClipLocationDecoder/Model.py", os.path.join(self.snapshot_folder_path, "Model.py"))
+        # Copy config.json file to snapshot folder
+        shutil.copyfile("/home/tobias.rothlin/GeoLocalization/src/DGX1/src/ClipLocationDecoder/config.json", os.path.join(self.snapshot_folder_path, "config.json"))
+
+        self.tensorboard_writer = SummaryWriter(log_dir=os.path.join(self.snapshot_folder_path, "tensorboard"))
         self.training_log_file = os.path.join(self.snapshot_folder_path, "training.log")
+
+        print(f"Model is on Device: {self.model.get_device()}")
+
+        self.tensorboard_writer.add_graph(self.model, torch.randn(1,577,1024).to(self.device))
+
+        print(f"Snapshot folder: {self.snapshot_folder_path}")
 
         with open(self.training_log_file, "w") as f:
             f.write("")
@@ -102,9 +114,11 @@ class Trainer:
             if is_train:
                 progress_bar.set_postfix_str(f"Loss {self.loss_average_train.get():.5f}")
                 self.log(f"Train,Epoch:{epoch},Batch:{batch_idx},Loss:{self.loss_average_train.get():.5f}")
+                self.tensorboard_writer.add_scalar('Loss/train', self.loss_average_train.get(), epoch * len(dataloader) + batch_idx)
             else:
                 progress_bar.set_postfix_str(f"Loss {self.loss_average_test.get():.5f}")
                 self.log(f"Test,Epoch:{epoch},Batch:{batch_idx},Loss:{self.loss_average_test.get():.5f}")
+                self.tensorboard_writer.add_scalar('Loss/test', self.loss_average_test.get(), epoch * len(dataloader) + batch_idx)
 
             if with_logging:
                 if batch_idx % self.log_interval == 0:
@@ -149,9 +163,6 @@ class Trainer:
             self.model.train()
             self.__run_epoch(self.train_dataloader, epoch,with_logging=True,is_train=True)
 
-            if self.gaussian_smoothing_scheduler is not None:
-                self.gaussian_smoothing_scheduler.decay()
-
             self.model.eval()
             self.__run_epoch(self.test_dataloader, epoch,with_logging=False,is_train=False)
 
@@ -170,6 +181,8 @@ class Trainer:
                 print("Could not connect to MLFlow")
                 print(e)
                 self.log_mlflow = False
+
+        self.tensorboard_writer.close()
 
 
     def save(self, path):

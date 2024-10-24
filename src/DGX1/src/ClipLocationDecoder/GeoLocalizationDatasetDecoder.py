@@ -33,9 +33,7 @@ class GeoLocalizationDatasetDecoder(Dataset):
                  error_output="./error_output.txt",
                  standardization_coordinates=False,
                  use_cache=True,
-                 encoder_model=None,
-                 std_dev_km=None,
-                 std_dev_scheduler=None):
+                 encoder_model=None):
         
         """
         :param folder: The folder containing the images and the labels
@@ -51,18 +49,6 @@ class GeoLocalizationDatasetDecoder(Dataset):
         self.folder = folder
 
         self.encoder_model = encoder_model
-        self.use_gaussian_smoothing = std_dev_km is not None
-
-        self.std_dev_scheduler = std_dev_scheduler
-
-        if self.use_gaussian_smoothing:
-            print(f"Using gaussian smoothing with std_dev: {std_dev_km}")
-        self.std_dev_km = std_dev_km
-
-        if self.std_dev_scheduler is not None:
-            print(f"Using scheduler: {self.std_dev_scheduler} will overwrite std_dev_km")
-           
-              
 
         self.standardization_coordinates = standardization_coordinates
 
@@ -81,11 +67,7 @@ class GeoLocalizationDatasetDecoder(Dataset):
 
         print(f"Loaded {len(self.data)} files")
 
-    def set_std_dev_km(self,std_dev_km):
-        self.std_dev_km = std_dev_km
-
     def __load_vector(self, numpy_path):
-        numpy_path = self.__clean_numpy_path(numpy_path)
         vector = np.load(numpy_path)
         # Remove batch dimension
         vector = vector[0, :]
@@ -152,37 +134,10 @@ class GeoLocalizationDatasetDecoder(Dataset):
     def __getitem__(self, idx):
         vector_path , label = self.data[idx]
         vector = self.__load_vector(vector_path)
-        if self.use_gaussian_smoothing:
-            if self.std_dev_scheduler is not None:
-                new_std = self.std_dev_scheduler.get_std_dev()
-                if new_std != self.std_dev_km:
-                    print(f"Changing std_dev from {self.std_dev_km} to {new_std}")
-                    self.std_dev_km = new_std
-            label = self.__gaussian_smoothing(label)
         if self.standardization_coordinates:
             label = self.__standardize_coordinates(label)
         return vector, label
     
-    def __radians(self, degrees):
-        return degrees * (self.PI / 180)
-    
-    
-    
-
-    def __gaussian_smoothing(self,label):
-        if self.std_dev_km < 0.001:
-            return label
-        
-        lat, lon = label
-        std_dev_lat = self.std_dev_km / 111.32  # 1 degree latitude ≈ 111.32 km
-
-        std_dev_lon = self.std_dev_km / (111.32 * torch.cos(self.__radians(lat)))  # Adjust for latitude
-
-        lat_samples = torch.normal(mean=torch.tensor([lat]), std=torch.tensor([std_dev_lat])).item()
-        lon_samples = torch.normal(mean=torch.tensor([lon]), std=torch.tensor([std_dev_lon])).item()
-
-        location = torch.tensor([lat_samples, lon_samples])
-        return location
     
     def __standardize_coordinates(self,label):
         return torch.tensor([label[0].item() / 90, label[1].item() / 180])

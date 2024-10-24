@@ -71,8 +71,7 @@ if __name__ == '__main__':
 
 
     for config in configs["Runs"]:
-        gaussian_smoothing_scheduler = GaussianSmoothingScheduler(50,0.5,0.0)
-        
+
         test_dataset = GeoLocalizationDatasetDecoder(TEST_DATA_FOLDER,
                  error_output="./error_output.txt",
                  standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
@@ -82,13 +81,11 @@ if __name__ == '__main__':
 
         print(f"Test dataset size: {len(test_dataset.data)}")
 
-        train_dataset = GeoLocalizationDatasetDecoder(TEST_DATA_FOLDER,
+        train_dataset = GeoLocalizationDatasetDecoder(TRAIN_DATA_FOLDER,
                  error_output="./error_output.txt",
                  standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
                  use_cache=True,
-                 encoder_model=config["ModelConfig"]["BaseModel"],
-                 std_dev_km=1,
-                 std_dev_scheduler=gaussian_smoothing_scheduler)
+                 encoder_model=config["ModelConfig"]["BaseModel"])
         
         print(f"Train dataset size: {len(train_dataset.data)}")
 
@@ -108,13 +105,13 @@ if __name__ == '__main__':
                                         prefetch_factor=config["TrainingConfig"]["PrefetchFactor"])
         
 
-        model = ClipLocationDecoder()
+        model = ClipLocationDecoder(standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"])
 
 
         vector, label = train_dataset[0]
         summary(model, input_size=(1,vector.shape[0],vector.shape[1]))
 
-        loss_function = HaversineLoss()
+        loss_function = HaversineLoss(use_standarized_input=config["ModelConfig"]["StandardizationCoordinates"])
 
         optimizer = torch.optim.Adam(model.parameters(), lr=config["TrainingConfig"]["LearningRate"],
                                       amsgrad=config["TrainingConfig"]["Amsgrad"], 
@@ -129,7 +126,6 @@ if __name__ == '__main__':
                             loss_function =loss_function ,
                             optimizer = optimizer,
                             lr_scheduler = lr_scheduler,
-                            gaussian_smoothing_scheduler = gaussian_smoothing_scheduler,
                             gradient_accumulation_steps = config["TrainingConfig"]["GradientAccumulationSteps"],
                             epochs = config["TrainingConfig"]["Epochs"],
                             device = device,
