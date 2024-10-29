@@ -34,6 +34,11 @@ GeoLocalization is a project aimed at providing accurate geographical location s
     apptainer instance stop <session_name>
     ```
 
+- List all runnig Apptainer Instances:
+    ```bash
+    apptainer instance list
+    ```
+
 
 ## References
 - GeoCLIP: clip-inspired alignment between locations and images for effective worldwide geo-localization

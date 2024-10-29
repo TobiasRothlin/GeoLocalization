@@ -874,15 +874,6 @@
             "IamgesDownloaded": 1000
         },
         {
-            "_country": "Iran",
-            "lat": 27.947687,
-            "lon": 55.522713,
-            "radius": 70,
-            "numberOfImages": 1000,
-            "DidDownload": false,
-            "IamgesDownloaded": 0
-        },
-        {
             "_country": "Russia",
             "lat": 45.494029,
             "lon": 41.083324,
@@ -971,6 +962,570 @@
             "numberOfImages": 1000,
             "DidDownload": true,
             "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Paris",
+            "lat": 48.861922,
+            "lon": 2.308052,
+            "radius": 5,
+            "zoom": 16,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "London",
+            "lat": 51.509423,
+            "lon": -0.101609,
+            "radius": 5,
+            "zoom": 16,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Glasgow",
+            "lat": 55.859408,
+            "lon": -4.293941,
+            "radius": 5,
+            "zoom": 16,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Rome",
+            "lat": 41.896592,
+            "lon": 12.492718,
+            "radius": 5,
+            "zoom": 16,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Berlin",
+            "lat": 52.516677,
+            "lon": 13.404536,
+            "radius": 5,
+            "zoom": 16,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "San Francisco",
+            "lat": 37.786138,
+            "lon": -122.426625,
+            "radius": 5,
+            "zoom": 16,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Palo Alto",
+            "lat": 37.445593,
+            "lon": -122.146013,
+            "radius": 5,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "San Jose",
+            "lat": 37.35809,
+            "lon": -121.921456,
+            "radius": 3,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Los Angeles",
+            "lat": 34.038508,
+            "lon": -118.240852,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Anaheim",
+            "lat": 33.827841,
+            "lon": -117.895262,
+            "radius": 5,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "San Diego",
+            "lat": 32.721147,
+            "lon": -117.15995,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 266
+        },
+        {
+            "_country": "Minneapolis",
+            "lat": 44.982709,
+            "lon": -93.258719,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Chicago",
+            "lat": 41.883188,
+            "lon": -87.668118,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 598
+        },
+        {
+            "_country": "New York",
+            "lat": 40.716754,
+            "lon": -74.002756,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 995
+        },
+        {
+            "_country": "Boston",
+            "lat": 42.367214,
+            "lon": -71.046181,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Washington",
+            "lat": 38.900998,
+            "lon": -77.024402,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 182
+        },
+        {
+            "_country": "Brideport",
+            "lat": 41.192954,
+            "lon": -73.196638,
+            "radius": 5,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 251
+        },
+        {
+            "_country": "Toronto",
+            "lat": 43.650667,
+            "lon": -79.386953,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Totonto South",
+            "lat": 43.256365,
+            "lon": -79.841932,
+            "radius": 5,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 500
+        },
+        {
+            "_country": "Panama",
+            "lat": 8.990835,
+            "lon": -79.523199,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 523
+        },
+        {
+            "_country": "Miami",
+            "lat": 25.898811,
+            "lon": -80.204543,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Cuba",
+            "lat": 23.12328,
+            "lon": -82.287815,
+            "radius": 7,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Cuba",
+            "lat": 21.95,
+            "lon": -78.72,
+            "radius": 7,
+            "numberOfImages": 500,
+            "DidDownload": true,
+            "IamgesDownloaded": 2
+        },
+        {
+            "_country": "Buenos Aires",
+            "lat": -34.644896,
+            "lon": -58.455361,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Cape Town",
+            "lat": -33.957322,
+            "lon": 18.427906,
+            "radius": 10,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Cairo",
+            "lat": 30.031209,
+            "lon": 31.212274,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": true,
+            "IamgesDownloaded": 1000
+        },
+        {
+            "_country": "Luxor",
+            "lat": 25.672875,
+            "lon": 32.609185,
+            "radius": 7,
+            "numberOfImages": 500,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Madrid",
+            "lat": 40.417716,
+            "lon": -3.709897,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Barcelona",
+            "lat": 41.389971,
+            "lon": 2.164338,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Athens",
+            "lat": 37.968371,
+            "lon": 23.702972,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Istanbul",
+            "lat": 41.020085,
+            "lon": 28.98208,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Ankera",
+            "lat": 39.929266,
+            "lon": 32.851453,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Kopenhagen",
+            "lat": 55.679681,
+            "lon": 12.581716,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Stockholm",
+            "lat": 59.32758,
+            "lon": 17.979669,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Oslo",
+            "lat": 59.911661,
+            "lon": 10.72866,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Bergen",
+            "lat": 60.395107,
+            "lon": 5.319017,
+            "radius": 7,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Helsinki",
+            "lat": 60.167645,
+            "lon": 24.938388,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Norway",
+            "lat": 62.146802,
+            "lon": 6.076004,
+            "radius": 7,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "St.Petersburg",
+            "lat": 59.934823,
+            "lon": 30.325405,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Wroclaw",
+            "lat": 51.115561,
+            "lon": 17.039842,
+            "radius": 7,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Budapest",
+            "lat": 47.500137,
+            "lon": 19.043577,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Prague",
+            "lat": 50.071661,
+            "lon": 14.419357,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Brasov",
+            "lat": 45.654057,
+            "lon": 25.599123,
+            "radius": 7,
+            "numberOfImages": 500,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Madagascar",
+            "lat": -13.400625,
+            "lon": 48.312189,
+            "radius": 40,
+            "numberOfImages": 500,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Gabrone",
+            "lat": -24.723202,
+            "lon": 25.803576,
+            "radius": 10,
+            "numberOfImages": 500,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "New Dehli",
+            "lat": 28.622902,
+            "lon": 77.234416,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Jaipur",
+            "lat": 26.915004,
+            "lon": 75.798526,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Agra",
+            "lat": 27.177217,
+            "lon": 78.027003,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Theran",
+            "lat": 35.695881,
+            "lon": 51.376595,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Kathmandu",
+            "lat": 27.700313,
+            "lon": 85.33703,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Hyderabad",
+            "lat": 17.380112,
+            "lon": 78.477031,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Baku",
+            "lat": 40.399621,
+            "lon": 49.8625,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Bamako",
+            "lat": 12.618483,
+            "lon": -7.988499,
+            "radius": 5,
+            "numberOfImages": 500,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Shey",
+            "lat": 34.050292,
+            "lon": 77.653057,
+            "radius": 70,
+            "numberOfImages": 500,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Thimphy",
+            "lat": 27.474712,
+            "lon": 89.635964,
+            "radius": 5,
+            "numberOfImages": 500,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Bankok",
+            "lat": 13.739886,
+            "lon": 100.530788,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Sim Reap",
+            "lat": 13.372838,
+            "lon": 103.86458,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Ho Chi Minh",
+            "lat": 10.811299,
+            "lon": 106.693057,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Kualalumpur",
+            "lat": 3.142073,
+            "lon": 101.698963,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Singapore",
+            "lat": 1.308007,
+            "lon": 103.84505,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Hong Kong",
+            "lat": 22.311665,
+            "lon": 114.174768,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
+        },
+        {
+            "_country": "Sidney",
+            "lat": -33.865716,
+            "lon": 151.206877,
+            "radius": 5,
+            "numberOfImages": 1000,
+            "DidDownload": false,
+            "IamgesDownloaded": 0
         }
     ]
 }

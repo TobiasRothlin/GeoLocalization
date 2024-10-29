@@ -31,30 +31,11 @@ done
 # Ensure each script is executable
 chmod +x $SCRIPT_FILE_VALIDATION
 chmod +x $SCRIPT_REVERSE_GEOCODING
-chmod +x $SCRIPT_MAPILLARY_COLLECTION
 chmod +x $SCRIPT_CLASSIFICATION
 
 
 
 # Run each script in the specified order
-
-#-------------------------------------------------------------------------------------------------
-if [ "$REBUILD" = true ]; then
-    echo "Building and Running Script $SCRIPT_MAPILLARY_COLLECTION"
-    $SCRIPT_MAPILLARY_COLLECTION -r
-    if [ $? -ne 0 ]; then
-        echo "$SCRIPT_MAPILLARY_COLLECTION failed"
-        exit 1
-    fi
-else
-    echo "Running Script $SCRIPT_MAPILLARY_COLLECTION"
-    $SCRIPT_MAPILLARY_COLLECTION
-    if [ $? -ne 0 ]; then
-        echo "$SCRIPT_MAPILLARY_COLLECTION failed"
-        exit 1
-    fi
-fi
-
 #-------------------------------------------------------------------------------------------------
 
 if [ "$REBUILD" = true ]; then

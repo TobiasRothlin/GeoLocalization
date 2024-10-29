@@ -204,7 +204,7 @@ class MapillaryInterface:
         return clean_data
 
 
-    def get_data(self, lat, lon, output_path, file_name=None, max_images=None, radius=10,):
+    def get_data(self, lat, lon, output_path, file_name=None, max_images=None, radius=10,zoom=14):
         if not os.path.exists(output_path):
             os.makedirs(output_path)
 
@@ -216,7 +216,7 @@ class MapillaryInterface:
             image_file_name = file_name
 
         bbox = self.__get_bbox(lat, lon, radius, show_plot=False)
-        data = self.__get_image_data_by_bbox(*bbox, show_plot=False)
+        data = self.__get_image_data_by_bbox(*bbox, show_plot=False,zoom=zoom)
         data = self.__process_image_data(data)
 
         data_no_pano = [sample for sample in data if not sample["is_pano"]]

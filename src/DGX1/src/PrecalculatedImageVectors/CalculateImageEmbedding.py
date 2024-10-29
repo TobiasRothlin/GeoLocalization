@@ -58,6 +58,9 @@ class ImageEmbeddingCalculator:
             
         if "image_embedding" not in raw_data:
             raw_data["image_embedding"] = {}
+
+        if self.config["BaseModel"] in raw_data["image_embedding"]:
+            return None
             
         image = self.__load_image(image_path)
 

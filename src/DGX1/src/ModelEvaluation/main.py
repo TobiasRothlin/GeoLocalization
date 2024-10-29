@@ -1,9 +1,16 @@
 import torch
 import os
 import sys
+
+RUN_PATH = "/home/tobias.rothlin/data/TrainingSnapshots/run_7"
+MODEL_WEIGHTS =RUN_PATH + "/model_end_of_epoch_4.pt"
+
+sys.path.append(RUN_PATH)
+from Model import ClipLocationDecoder
+
+sys.path.append("/home/tobias.rothlin/GeoLocalization/src/DGX1/src/ClipLocationDecoder")
 sys.path.append('/home/tobias.rothlin/GeoLocalization/src/DGX1/src/Utility')
 sys.path.append('/Users/tobiasrothlin/Documents/MSE/GeoLocalization/src/DGX1/src/Utility')
-sys.path.append('/home/tobias.rothlin/GeoLocalization/src/DGX1/src/RegressionTraining')
 
 from time import sleep
 
@@ -17,14 +24,15 @@ import json
 import dotenv
 import mlflow
 
-from GeoLocalizationDataset import GeoLocalizationDataset
+from GeoLocalizationDatasetDecoder import GeoLocalizationDatasetDecoder
 from torch.utils.data import DataLoader
-from Model import GeoLocalizationModel
+
+from HaversineLoss import HaversineLoss
 
 from Evaluation import Evaluation
 
 
-from torchsummary import summary
+from torchinfo import summary
 
 import matplotlib.pyplot as plt
 
@@ -68,75 +76,81 @@ if __name__ == '__main__':
     
     device = checkCuda()
 
-    with open("./config.json", "r") as f:
+    with open(RUN_PATH+"/config.json", "r") as f:
         configs = json.load(f)
 
     for config in configs["Runs"]:
 
         CHECK_IMAGE_FILES = False
 
-        test_dataset_im2gps = GeoLocalizationDataset(TEST_DATA_FOLDER_IM2GPS,
-                                            image_width=config["ModelConfig"]["ImageWidth"],
-                                            image_height=config["ModelConfig"]["ImageHeight"],
-                                            use_center_crop=config["ModelConfig"]["UseCenterCrop"],
-                                            check_images=CHECK_IMAGE_FILES,
-                                            image_mean=config["ModelConfig"]["ImageMean"],
-                                            image_std=config["ModelConfig"]["ImageStd"],
-                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
-                                            use_cache=False)
+        test_dataset_im2gps = GeoLocalizationDatasetDecoder(TEST_DATA_FOLDER_IM2GPS,
+                                                            error_output="./error_output.txt",
+                                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
+                                                            use_cache=True,
+                                                            encoder_model=config["ModelConfig"]["BaseModel"])
         
-        test_dataset_im2gps3k = GeoLocalizationDataset(TEST_DATA_FOLDER_IM2GPS3K,
-                                            image_width=config["ModelConfig"]["ImageWidth"],
-                                            image_height=config["ModelConfig"]["ImageHeight"],
-                                            use_center_crop=config["ModelConfig"]["UseCenterCrop"],
-                                            check_images=CHECK_IMAGE_FILES,
-                                            image_mean=config["ModelConfig"]["ImageMean"],
-                                            image_std=config["ModelConfig"]["ImageStd"],
-                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
-                                            use_cache=False)
+        test_dataset_im2gps3k = GeoLocalizationDatasetDecoder(TEST_DATA_FOLDER_IM2GPS3K,
+                                                            error_output="./error_output.txt",
+                                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
+                                                            use_cache=True,
+                                                            encoder_model=config["ModelConfig"]["BaseModel"])
         
-        train_dataset_holdout = GeoLocalizationDataset(TEST_DATA_FOLDER_HOLDOUT,
-                                            image_width=config["ModelConfig"]["ImageWidth"],
-                                            image_height=config["ModelConfig"]["ImageHeight"],
-                                            use_center_crop=config["ModelConfig"]["UseCenterCrop"],
-                                            check_images=CHECK_IMAGE_FILES,
-                                            image_mean=config["ModelConfig"]["ImageMean"],
-                                            image_std=config["ModelConfig"]["ImageStd"],
-                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
-                                            use_cache=False)
+        train_dataset_holdout = GeoLocalizationDatasetDecoder(TEST_DATA_FOLDER_HOLDOUT,
+                                                            error_output="./error_output.txt",
+                                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"],
+                                                            use_cache=True,
+                                                            encoder_model=config["ModelConfig"]["BaseModel"])
         
-        model = GeoLocalizationModel(config["ModelConfig"]["BaseModel"])
+        model = ClipLocationDecoder(standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"])
 
-        if config["ModelConfig"]["LoadFromCheckpoint"]:
-            state_dict = torch.load(config["ModelConfig"]["LoadFromCheckpoint"])
-            model.load_state_dict(state_dict)
-            print("Model loaded from: ", config["ModelConfig"]["LoadFromCheckpoint"])
+        model.load_from_checkpoint(MODEL_WEIGHTS)
+        
+        vector, label = train_dataset_holdout[0]
+        summary(model, input_size=(1,vector.shape[0],vector.shape[1]))
 
-        print("Base Model")
-        summary(model.vision_model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))
-        print(100*"=")
-        print("Full Model")
-        summary(model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))
+        test_loader_im2gps = DataLoader(test_dataset_im2gps, 
+                                        batch_size=config["TrainingConfig"]["TestBatchSize"], 
+                                        shuffle=True,
+                                        num_workers=config["TrainingConfig"]["NumWorkers"],
+                                        persistent_workers=config["TrainingConfig"]["PersistantWorkers"], 
+                                        prefetch_factor=config["TrainingConfig"]["PrefetchFactor"])
+        
+        test_loader_im2gps3k = DataLoader(test_dataset_im2gps3k, 
+                                        batch_size=config["TrainingConfig"]["TestBatchSize"], 
+                                        shuffle=True,
+                                        num_workers=config["TrainingConfig"]["NumWorkers"],
+                                        persistent_workers=config["TrainingConfig"]["PersistantWorkers"], 
+                                        prefetch_factor=config["TrainingConfig"]["PrefetchFactor"])
+        
+        train_loader_holdout = DataLoader(train_dataset_holdout, 
+                                        batch_size=config["TrainingConfig"]["TestBatchSize"], 
+                                        shuffle=True,
+                                        num_workers=config["TrainingConfig"]["NumWorkers"],
+                                        persistent_workers=config["TrainingConfig"]["PersistantWorkers"], 
+                                        prefetch_factor=config["TrainingConfig"]["PrefetchFactor"])
 
-        test_loader_im2gps = DataLoader(test_dataset_im2gps, batch_size=config["TestConfig"]["TestBatchSize"], shuffle=True,num_workers=config["TestConfig"]["NumWorkers"])
-        test_loader_im2gps3k = DataLoader(test_dataset_im2gps3k, batch_size=config["TestConfig"]["TestBatchSize"], shuffle=True,num_workers=config["TestConfig"]["NumWorkers"])
-        train_loader_holdout = DataLoader(train_dataset_holdout, batch_size=config["TestConfig"]["TestBatchSize"], shuffle=True,num_workers=config["TestConfig"]["NumWorkers"])
+        loss_function = HaversineLoss(use_standarized_input=config["ModelConfig"]["StandardizationCoordinates"])
 
-        evaluation_test_im2gps = Evaluation(model, test_loader_im2gps, device,user_standardized_input=config["ModelConfig"]["StandardizationCoordinates"])
-        evaluation_test_im2gps3k = Evaluation(model, test_loader_im2gps3k, device,user_standardized_input=config["ModelConfig"]["StandardizationCoordinates"])
-
-        evaluation_test_holdout = Evaluation(model, train_loader_holdout, device,user_standardized_input=config["ModelConfig"]["StandardizationCoordinates"])
+        evaluation_test_im2gps = Evaluation(model, test_loader_im2gps, device, loss_function)
+        
+        evaluation_test_im2gps3k = Evaluation(model, test_loader_im2gps3k, device, loss_function)
+        
+        evaluation_test_holdout = Evaluation(model, train_loader_holdout, device, loss_function)
+        
 
         print("Evaluation Im2GPS")
         evaluation_test_im2gps.evaluate()
+        evaluation_test_im2gps.to_file(RUN_PATH+"/evaluation_im2gps.txt")
         print(evaluation_test_im2gps)
         print(100*"=")
         print("Evaluation Im2GPS3K")
         evaluation_test_im2gps3k.evaluate()
+        evaluation_test_im2gps3k.to_file(RUN_PATH+"/evaluation_im2gps3k.txt")
         print(evaluation_test_im2gps3k)
         print(100*"=")
-        print("Evaluation Train")
+        print("Evaluation Holdout")
         evaluation_test_holdout.evaluate()
+        evaluation_test_holdout.to_file(RUN_PATH+"/evaluation_holdout.txt")
         print(evaluation_test_holdout)
         print(100*"=")
 
@@ -152,19 +166,24 @@ if __name__ == '__main__':
             mlflow.start_run()
         
             mlflow.log_param("Model", config["ModelConfig"]["BaseModel"])
-            mlflow.log_param("ImageWidth", config["ModelConfig"]["ImageWidth"])
-            mlflow.log_param("ImageHeight", config["ModelConfig"]["ImageHeight"])
-            mlflow.log_param("UseCenterCrop", config["ModelConfig"]["UseCenterCrop"])
-            mlflow.log_param("ImageMean", config["ModelConfig"]["ImageMean"])
-            mlflow.log_param("ImageStd", config["ModelConfig"]["ImageStd"])
             mlflow.log_param("StandardizationCoordinates", config["ModelConfig"]["StandardizationCoordinates"])
-            mlflow.log_param("LoadFromCheckpoint", config["ModelConfig"]["LoadFromCheckpoint"])
-            mlflow.log_param("TestBatchSize", config["TestConfig"]["TestBatchSize"])
-            mlflow.log_param("NumWorkers", config["TestConfig"]["NumWorkers"])
-            mlflow.log_param("StandardizationCoordinates", config["ModelConfig"]["StandardizationCoordinates"])
+            mlflow.log_param("TestBatchSize", config["TrainingConfig"]["TestBatchSize"])
+            mlflow.log_param("NumWorkers", config["TrainingConfig"]["NumWorkers"])
+
+            mlflow.log_param("TrainBatchSize", config["TrainingConfig"]["TrainBatchSize"])
+            mlflow.log_param("Epochs", config["TrainingConfig"]["Epochs"])
+            mlflow.log_param("LearningRate", config["TrainingConfig"]["LearningRate"])
+            mlflow.log_param("WeightDecay", config["TrainingConfig"]["WeightDecay"])
+            mlflow.log_param("PersistantWorkers", config["TrainingConfig"]["PersistantWorkers"])
+            mlflow.log_param("PrefetchFactor", config["TrainingConfig"]["PrefetchFactor"])
+            mlflow.log_param("GradientAccumulationSteps", config["TrainingConfig"]["GradientAccumulationSteps"])
+            mlflow.log_param("Amsgrad", config["TrainingConfig"]["Amsgrad"])
+            mlflow.log_param("Betas", config["TrainingConfig"]["Betas"])
+            mlflow.log_param("Gamma", config["TrainingConfig"]["Gamma"])
 
             mlflow.log_metric("Im2GPS_Average_Loss", evaluation_test_im2gps.evaluation_results["average_loss"])
             mlflow.log_metric("Im2GPS3K_Average_Loss", evaluation_test_im2gps3k.evaluation_results["average_loss"])
+            mlflow.log_metric("Holdout_Average_Loss", evaluation_test_holdout.evaluation_results["average_loss"])
 
             mlflow.log_metric("Im2GPS_Inside_1", evaluation_test_im2gps.evaluation_results["is_inside_average"][1])
             mlflow.log_metric("Im2GPS_Inside_25", evaluation_test_im2gps.evaluation_results["is_inside_average"][25])
@@ -184,9 +203,9 @@ if __name__ == '__main__':
             mlflow.log_metric("Holdout_Inside_750", evaluation_test_holdout.evaluation_results["is_inside_average"][750])
             mlflow.log_metric("Holdout_Inside_2500", evaluation_test_holdout.evaluation_results["is_inside_average"][2500])
 
-            mlflow.log_artifact("./config.json")
-            mlflow.log_artifact("/home/tobias.rothlin/GeoLocalization/src/DGX1/src/RegressionTraining/Model.py")
-            mlflow.log_artifact(config["ModelConfig"]["LoadFromCheckpoint"])
+            mlflow.log_artifact(RUN_PATH+"/config.json")
+            mlflow.log_artifact(RUN_PATH+"/Model.py")
+            mlflow.log_artifact(MODEL_WEIGHTS)
 
 
         except Exception as e:

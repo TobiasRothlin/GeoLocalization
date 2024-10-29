@@ -1,15 +1,13 @@
-from HaversineLoss import HaversineLoss
-
 import torch
 
 from tqdm import tqdm
 
 class Evaluation:
-    def __init__(self, model, data, device,user_standardized_input=False):
+    def __init__(self, model, data, device,loss_function):
         self.model = model
         self.data_loader = data
         self.device = device
-        self.haversine_loss = HaversineLoss(use_standarized_input=user_standardized_input)
+        self.haversine_loss = loss_function
 
         self.model = self.model.to(self.device)
 
@@ -73,6 +71,12 @@ class Evaluation:
             output += f"  -{key} km: {self.evaluation_results['is_inside'][key]}/{self.evaluation_results['total']} ({self.evaluation_results['is_inside_average'][key]*100:.2f}%)\n"
 
         return output
+    
+    def to_file(self, file_path):
+        if not file_path.endswith(".txt"):
+            file_path += ".txt"
+        with open(file_path, "w") as file:
+            file.write(str(self))
 
         
        

@@ -65,9 +65,10 @@ if __name__ == "__main__":
         lon = config["lon"]
         radius = config["radius"]
         max_images = config["numberOfImages"]
+        zoom = config.get("zoom", 14)
         try:
             folder = get_unque_folder_name(f"Batch", TRAIN_DATA_FOLDER)
-            number_of_locations_downloaded = mi.get_data(lat, lon, folder, radius=radius, max_images=max_images)
+            number_of_locations_downloaded = mi.get_data(lat, lon, folder, radius=radius, max_images=max_images, zoom=zoom)
             config["DidDownload"] = True
             config["IamgesDownloaded"] = number_of_locations_downloaded
             

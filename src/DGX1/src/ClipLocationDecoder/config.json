@@ -15,8 +15,8 @@
                 "PrefetchFactor": 4,
                 "SaveEvery": 100,
                 "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
-                "GradientAccumulationSteps": 4,
-                "LearningRate": 1e-6,
+                "GradientAccumulationSteps": 1,
+                "LearningRate": 1e-5,
                 "Amsgrad": true,
                 "WeightDecay": 1e-4,
                 "Betas": [
