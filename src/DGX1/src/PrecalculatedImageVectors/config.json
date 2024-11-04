@@ -2,23 +2,7 @@
     "Runs": [
         {
             "ModelConfig": {
-                "RunName": "CLIP",
-                "BaseModel": "openai/clip-vit-large-patch14-336",
-                "Discripiton": "CLIP with ViT base model",
-                "ImageWidth": 336,
-                "ImageHeight": 336,
-                "UseCenterCrop": false,
-                "ImageMean": [
-                    0.48145466,
-                    0.4578275,
-                    0.40821073
-                ],
-                "ImageStd": [
-                    0.26862954,
-                    0.26130258,
-                    0.27577711
-                ]
-               
+                "BaseModel": "openai/clip-vit-large-patch14-336"
             }
         }
     ]

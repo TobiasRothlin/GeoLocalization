@@ -46,8 +46,12 @@ def get_unque_folder_name(folder_name_og, base_folder):
         i+=1
 
     new_path = os.path.join(base_folder, folder_name)
-    print(f"Creating folder {new_path}")
-    os.makedirs(new_path)
+    
+    try:
+        os.makedirs(new_path)
+    except Exception as e:
+        print(f"Error in creating folder {new_path}: {e}")
+        new_path = get_unque_folder_name(folder_name_og, base_folder)
     return new_path
 
 def load_image(url,idx=None):
@@ -126,7 +130,7 @@ if __name__ == "__main__":
             print(f"Error in row {idx}")
             print(e)
 
-    batched_elements = [elements[i:i+BATCH_SIZE] for i in range(0, len(elements), BATCH_SIZE)]
+    batched_elements = [elements[i:i+BATCH_SIZE] for i in range(0, len(elements), BATCH_SIZE)][739:]
 
     print(f"Downloading {len(elements):,d} images in {len(batched_elements)}")
 

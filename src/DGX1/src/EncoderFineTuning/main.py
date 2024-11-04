@@ -1,8 +1,6 @@
 import torch
 import os
-import sys
-sys.path.append('/home/tobias.rothlin/GeoLocalization/src/DGX1/src/Utility')
-sys.path.append('/Users/tobiasrothlin/Documents/MSE/GeoLocalization/src/DGX1/src/Utility')
+
 
 from time import sleep
 
@@ -15,18 +13,12 @@ import dotenv
 import mlflow
 
 from GeoLocalizationDataset import GeoLocalizationDataset
-from torch.utils.data import DataLoader
-from torch.utils.data.distributed import DistributedSampler
-from Model import GeoLocalizationModel
+
+
+from Model import LocationDecoder
 from HaversineLoss import HaversineLoss
-from Trainer import Trainer, ddp_setup
-
-from torch.distributed import init_process_group, destroy_process_group
-import torch.multiprocessing as mp
-
-from torchsummary import summary
-
-import matplotlib.pyplot as plt
+from SingleGPUTrainer import SingleGPUTrainer
+from MultiGPUTrainer import MultiGPUTraining
 
 BASE_PATH = "/home/tobias.rothlin/data/GeoDataset"
 # BASE_PATH = "/Users/tobiasrothlin/Documents/MSE/Dataset"
@@ -57,67 +49,6 @@ def checkCuda():
 
     return "cuda" if torch.cuda.is_available() else "cpu"
 
-def run(rank,world_size,config,test_dataset,train_dataset,model,loss_function):
-    ddp_setup(rank, world_size)
-    # Create the dataloader
-    train_loader = DataLoader(train_dataset, batch_size=config["TrainingConfig"]["TrainBatchSize"], shuffle=False,num_workers=config["TrainingConfig"]["NumWorkers"],persistent_workers=config["TrainingConfig"]["PersistantWorkers"], prefetch_factor=config["TrainingConfig"]["PrefetchFactor"], sampler=DistributedSampler(train_dataset),pin_memory=True)
-    test_loader = DataLoader(test_dataset, batch_size=config["TrainingConfig"]["TestBatchSize"], shuffle=True,num_workers=config["TrainingConfig"]["NumWorkers"])
-
-
-    if rank == 0:
-        dotenv.load_dotenv(dotenv.find_dotenv())
-        use_mlflow = True
-
-        if use_mlflow:
-            try:
-                os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
-                os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
-
-                mlflow.set_tracking_uri("https://mlflow.infs.ch")
-                mlflow.set_experiment("GeoLocalization_Regression_Model")
-
-                mlflow.start_run()
-
-                mlflow.log_artifact("./config.json")
-                mlflow.log_artifact("./Model.py")
-                mlflow.log_param("Base Model Name", config["ModelConfig"]["BaseModel"])
-                mlflow.log_param("Run Name", config["ModelConfig"]["RunName"])
-
-                mlflow.log_params(config["TrainingConfig"])
-                mlflow.log_params(config["ModelConfig"])
-            except Exception as e:
-                print("Could not connect to MLFlow")
-                print(e)
-                use_mlflow = False
-        
-            
-    # Train the model
-
-    trainer = Trainer(model, 
-                        train_loader, 
-                        test_loader, 
-                        config["TrainingConfig"]["SaveEvery"], 
-                        config["TrainingConfig"]["SnapshotPath"], 
-                        loss_function, 
-                        rank,
-                        config["TrainingConfig"]["GradientAccumulationSteps"],
-                        config["TrainingConfig"]["LearningRate"],
-                        config["TrainingConfig"]["Amsgrad"],
-                        config["TrainingConfig"]["WeightDecay"],
-                        config["TrainingConfig"]["Betas"],
-                        config["TrainingConfig"]["Gamma"])
-    
-
-    trainer.train(config["TrainingConfig"]["Epochs"])
-
-    if rank == 0:
-        try:
-            mlflow.end_run()
-        except Exception as e:
-            print("Could not connect to MLFlow")
-            print(e)
-
-    destroy_process_group()
 
 
 if __name__ == '__main__':
@@ -127,53 +58,60 @@ if __name__ == '__main__':
     with open("./config.json", "r") as f:
         configs = json.load(f)
 
-
-
     for config in configs["Runs"]:
-
-        CHECK_IMAGE_FILES = False
-
-        test_dataset = GeoLocalizationDataset(TEST_DATA_FOLDER,
-                                            image_width=config["ModelConfig"]["ImageWidth"],
-                                            image_height=config["ModelConfig"]["ImageHeight"],
-                                            use_center_crop=config["ModelConfig"]["UseCenterCrop"],
-                                            check_images=CHECK_IMAGE_FILES,
-                                            image_mean=config["ModelConfig"]["ImageMean"],
-                                            image_std=config["ModelConfig"]["ImageStd"],
-                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"])
+        dataset_test = GeoLocalizationDataset(TEST_DATA_FOLDER,**config["DatasetConfig"])
+        dataset_train = GeoLocalizationDataset(TEST_DATA_FOLDER,**config["DatasetConfig"])
+            
+        model = LocationDecoder(config["ModelConfig"],
+                                base_model=config["DatasetConfig"]["base_model"],
+                                use_pre_calculated_embeddings=config["DatasetConfig"]["use_pre_calculated_embeddings"])
         
-        train_dataset = GeoLocalizationDataset(TRAIN_DATA_FOLDER,
-                                            image_width=config["ModelConfig"]["ImageWidth"],
-                                            image_height=config["ModelConfig"]["ImageHeight"],
-                                            use_center_crop=config["ModelConfig"]["UseCenterCrop"],
-                                            check_images=CHECK_IMAGE_FILES,
-                                            image_mean=config["ModelConfig"]["ImageMean"],
-                                            image_std=config["ModelConfig"]["ImageStd"],
-                                            standardization_coordinates=config["ModelConfig"]["StandardizationCoordinates"])
         
-        model = GeoLocalizationModel(config["ModelConfig"]["BaseModel"])
+        model.summary()
 
-        if config["ModelConfig"]["LoadFromCheckpoint"]:
-            state_dict = torch.load(config["ModelConfig"]["LoadFromCheckpoint"])
-            for key in list(state_dict.keys()):
-                print(key)
+        loss_function = HaversineLoss(use_standarized_input=config["DatasetConfig"]["normalize_labels"])
 
-            print(100*"=")
-            model.load_state_dict(state_dict)
-            print("Model loaded from: ", config["ModelConfig"]["LoadFromCheckpoint"])
+        optimizer = torch.optim.Adam(model.get_parameters(), 
+                                     lr=config["TrainingConfig"]["LearningRate"],
+                                     weight_decay=config["TrainingConfig"]["WeightDecay"],
+                                     amsgrad=config["TrainingConfig"]["Amsgrad"],
+                                     betas=config["TrainingConfig"]["Betas"])
+        
+        lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=config["TrainingConfig"]["Gamma"])
+        
+        if config["DataLoaderConfig"]["Is_Multi_GPU"]:
+            MultiGPUTraining(config,
+                            train_dataset=dataset_train,
+                            test_dataset=dataset_test,
+                            model=model,
+                            loss_function=loss_function,
+                            optimizer=None,
+                            lr_scheduler=None)
+        else:
+            trainer = SingleGPUTrainer(test_dataset=dataset_test,
+                                    train_dataset=dataset_train,
+                                    test_dataloader_config=config["DataLoaderConfig"]["Test"],
+                                    train_dataloader_config=config["DataLoaderConfig"]["Train"],
+                                    model=model,
+                                    loss_function=loss_function,
+                                    optimizer=optimizer,
+                                    lr_scheduler=lr_scheduler,
+                                    gradient_accumulation_steps=config["TrainingConfig"]["GradientAccumulationSteps"],
+                                    epochs=config["TrainingConfig"]["Epochs"],
+                                    device=device,
+                                    log_interval=config["TrainingConfig"]["SaveEvery"],
+                                    snapshot_path=config["TrainingConfig"]["SnapshotPath"],
+                                    log_mlflow=config["TrainingConfig"]["LogMLFlow"],
+                                    mlflow_experiment_name=config["TrainingConfig"]["MLFlowExperimentName"],
+                                    full_run_config=config)
+            
+            trainer.train()
 
-        print("Base Model")
-        summary(model.vision_model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))
-        print(100*"=")
-        print("Full Model")
-        summary(model, (3, config["ModelConfig"]["ImageHeight"], config["ModelConfig"]["ImageWidth"]))
-
-        loss_function = HaversineLoss(config["ModelConfig"]["StandardizationCoordinates"])
-
-        # Create the dataset
-        mp.spawn(run, args=(torch.cuda.device_count(),config,test_dataset,train_dataset,model,loss_function), nprocs=torch.cuda.device_count())
+        
 
 
+
+        
         
 
         

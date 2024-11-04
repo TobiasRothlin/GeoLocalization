@@ -39,6 +39,11 @@ GeoLocalization is a project aimed at providing accurate geographical location s
     apptainer instance list
     ```
 
+- Show GPU usage:
+    ```bash
+    watch -n 1 nvidia-smi
+    ```
+
 
 ## References
 - GeoCLIP: clip-inspired alignment between locations and images for effective worldwide geo-localization
