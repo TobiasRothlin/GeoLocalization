@@ -4,7 +4,7 @@ from transformers import CLIPModel
 
 class LocationDecoder(torch.nn.Module):
 
-    def __init__(self,config,base_model,use_pre_calculated_embeddings):
+    def __init__(self,config,base_model,use_pre_calculated_embeddings,freeze_base_model,is_pre_training=False):
         super(LocationDecoder, self).__init__()
 
         self.use_pre_calculated_embeddings = use_pre_calculated_embeddings
@@ -12,9 +12,17 @@ class LocationDecoder(torch.nn.Module):
 
         self.use_location_head = config["use_location_head"]
         self.use_similarity_head = config["use_similarity_head"]
+        self.freeze_base_model = freeze_base_model
 
+        if self.use_pre_calculated_embeddings:
+            self.vision_model = None
+        else:
+            self.vision_model = ClipVision(self.base_model,return_pooler=not self.use_location_head)
+
+            if self.freeze_base_model:
+                for param in self.vision_model.parameters():
+                    param.requires_grad = False
         
-
         if self.use_location_head:
             self.location_head = LocationHeadClip(config["LocationHeadClip"])
         else:
@@ -29,40 +37,14 @@ class LocationDecoder(torch.nn.Module):
 
         self.embedding = None
 
-        self.pre_vision_parameters = super(LocationDecoder, self).parameters()
-
-        if self.use_pre_calculated_embeddings:
-            self.vision_model = None
-        else:
-            self.vision_model = ClipVision(self.base_model,return_pooler=not self.use_location_head)
-
-    def get_embedding(self,image):
-        self.vision_model = self.vision_model.to(self.get_device())
-        if self.use_pre_calculated_embeddings:
-            return image
-        else:
-            self.vision_model.eval()
-            with torch.no_grad():
-                return self.vision_model(image)
-        self.vision_model = self.vision_model.to("cpu")
-
-    def get_parameters(self):
-        return self.pre_vision_parameters
-    
-    def __getstate__(self):
-        self.vision_model = None
-        state = self.__dict__.copy()
-        return state
-    
-    def __setstate__(self, state):
-        self.__dict__.update(state)
-        if not self.use_pre_calculated_embeddings:
-            self.vision_model = ClipVision(self.base_model,return_pooler=not self.use_location_head)
-
-
-        
+        self.is_pre_training = is_pre_training
 
     def forward(self, x):
+        if self.use_pre_calculated_embeddings:
+            pass
+        else:
+            x = self.vision_model(x)
+
         if self.use_location_head:
             x = self.location_head(x)
 
@@ -88,10 +70,7 @@ class LocationDecoder(torch.nn.Module):
                 summary(self, input_size=(1, 1024),device="cpu")
         else:
             print("Using Vision Model and Location Head with input size (1, 3, 336, 336)")
-            input_size = (1, 3, 336, 336)
-            x = torch.randn(input_size)
-            embedding = self.get_embedding(x)
-            summary(self, input_size=embedding.shape,device="cpu")
+            summary(self, input_size=(1, 3, 336, 336),device="cpu")
 
     def save(self, path,show_keys=False):
         state_dict = self.state_dict()

@@ -10,6 +10,7 @@ from tqdm import tqdm
 from MovingAverage import MovingAverage
 
 from torch.utils.data import DataLoader
+from HaversineLoss import HaversineLoss
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -31,7 +32,9 @@ class SingleGPUTrainer:
                  snapshot_path="./snapshots",
                  log_mlflow=False,
                  mlflow_experiment_name=None,
-                 full_run_config=None):
+                 full_run_config=None,
+                 contrast_learning_strategy=None,
+                 run_name=None):
         
         self.train_dataloader = DataLoader(train_dataset,**train_dataloader_config)
         self.test_dataloader = DataLoader(test_dataset,**test_dataloader_config)
@@ -45,6 +48,12 @@ class SingleGPUTrainer:
         self.log_mlflow = log_mlflow
         self.mlflow_experiment_name = mlflow_experiment_name
 
+        run_name = run_name if run_name is not None else "run"
+
+        self.haversine_loss = HaversineLoss(use_standarized_input=train_dataset.normalize_labels)
+
+        self.contrast_learning_strategy = contrast_learning_strategy
+
         if self.mlflow_experiment_name is None:
             print("No MLFlow Experiment Name provided. Disabling MLFlow Logging")
             self.log_mlflow = False
@@ -57,11 +66,11 @@ class SingleGPUTrainer:
         if not os.path.exists(self.snapshot_path):
             os.makedirs(self.snapshot_path)
 
-        self.snapshot_folder_path = os.path.join(self.snapshot_path, "run")
+        self.snapshot_folder_path = os.path.join(self.snapshot_path, run_name)
 
         run_idx = 0
         while os.path.exists(self.snapshot_folder_path):
-            self.snapshot_folder_path = os.path.join(self.snapshot_path, f"run_{run_idx}")
+            self.snapshot_folder_path = os.path.join(self.snapshot_path, f"{run_name}_{run_idx}")
             run_idx += 1
         
         os.makedirs(self.snapshot_folder_path)
@@ -75,33 +84,40 @@ class SingleGPUTrainer:
 
         print(f"Model is on Device: {self.model.get_device()}")
 
-        model_input,model_output = self.test_dataloader.dataset[0]
+        if self.contrast_learning_strategy:
+            print("Using Contrast Learning Strategy")
+            print(f"Strategy: {self.contrast_learning_strategy}")
+            model_input,_,model_output,_ = self.test_dataloader.dataset[0]
+        else:
+            model_input,model_output = self.test_dataloader.dataset[0]
+
+        print(f"Batch Size: {model_input.shape}")
 
         model_input = model_input.unsqueeze(0).to(self.device)
-        model_output = model_output.unsqueeze(0).to(self.device)
 
         self.tensorboard_writer.add_graph(self.model, model_input)
+
+        del model_input
+        del model_output
 
         print(f"Snapshot folder: {self.snapshot_folder_path}")
 
         with open(self.training_log_file, "w") as f:
             f.write("")
 
-
-
-    def __run_single_batch(self, batch,batch_idx,is_train):
+    def __run_regression(self, batch,batch_idx,is_train):
         input_vec, targets = batch
 
-        input_vec = input_vec.to(self.device)
-        targets = targets.to(self.device)
-
-        embeddings = self.model.get_embedding(input_vec)
-
-        outputs = self.model(embeddings)
-
-        loss = self.loss_function(outputs, targets)
+        
 
         if is_train:
+            input_vec = input_vec.to(self.device)
+            targets = targets.to(self.device)
+
+            outputs = self.model(input_vec)
+
+            loss = self.loss_function(outputs, targets)
+
             self.loss_average_train.add(loss.item())
 
             loss = loss / self.gradient_accumulation_steps
@@ -112,7 +128,67 @@ class SingleGPUTrainer:
                 self.optimizer.step()
                 self.optimizer.zero_grad()
         else:
+            with torch.no_grad():
+                input_vec = input_vec.to(self.device)
+                targets = targets.to(self.device)
+
+                outputs = self.model(input_vec)
+
+                loss = self.loss_function(outputs, targets)
             self.loss_average_test.add(loss.item())
+
+    def __run_contrast_similarity(self, batch,batch_idx,is_train):
+        vec_1, vec_2, location_1, location_2 = batch
+        distance = self.haversine_loss.haversine(location_1, location_2)
+        distance_norm = distance / 40_000 # Normalize distance to 0,1
+        similarity = 1 - distance_norm # Similarity is 1 - distance since the closer the points the more similar they are
+
+        if is_train:
+            vec_1 = vec_1.to(self.device)
+            vec_2 = vec_2.to(self.device)
+            
+
+            embedding_1 = self.model(vec_1)
+            embedding_2 = self.model(vec_2)
+
+            if self.contrast_learning_strategy == "CosignSimilarityLoss":
+                similarity = similarity.to(self.device)
+                loss = self.loss_function(embedding_1, embedding_2, similarity)
+            elif self.contrast_learning_strategy == "EuclidianDistanceLoss":
+                distance = distance.to(self.device)
+                loss = self.loss_function(embedding_1, embedding_2, distance)
+            else:
+                raise ValueError("Contrast Learning Strategy not recognized")
+
+            self.loss_average_train.add(loss.item())
+
+            loss = loss / self.gradient_accumulation_steps
+
+            loss.backward()
+
+            if batch_idx % self.gradient_accumulation_steps == 0:
+                self.optimizer.step()
+                self.optimizer.zero_grad()
+        else:
+            with torch.no_grad():
+                vec_1 = vec_1.to(self.device)
+                vec_2 = vec_2.to(self.device)
+                distance = distance.to(self.device)
+
+                embedding_1 = self.model(vec_1)
+                embedding_2 = self.model(vec_2)
+
+                loss = self.loss_function(embedding_1, embedding_2, distance)
+            self.loss_average_test.add(loss.item())
+
+
+
+
+    def __run_single_batch(self, batch,batch_idx,is_train):
+        if self.contrast_learning_strategy:
+            self.__run_contrast_similarity(batch,batch_idx,is_train)
+        else:
+            self.__run_regression(batch,batch_idx,is_train)
     
     def __run_epoch(self, dataloader, epoch,with_logging=True,is_train=True):
         prefix = "Train" if is_train else "Test"
@@ -176,8 +252,6 @@ class SingleGPUTrainer:
             self.__run_epoch(self.test_dataloader, epoch,with_logging=False,is_train=False)
 
             self.lr_scheduler.step()
-
-            
 
             self.save(os.path.join(self.snapshot_folder_path, f"model_end_of_epoch_{epoch}.pt"))
 

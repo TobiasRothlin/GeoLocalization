@@ -8,6 +8,9 @@ class HaversineLoss(torch.nn.Module):
 
         self.use_standarized_input = use_standarized_input
 
+        if self.use_standarized_input:
+            print("Using Standarized Input")
+
     def haversine(self, pred_location, target_location):
         pred_lat, pred_lon = pred_location[:, 0], pred_location[:, 1]
         target_lat, target_lon = target_location[:, 0], target_location[:, 1]

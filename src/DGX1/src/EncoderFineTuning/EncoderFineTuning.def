@@ -13,4 +13,4 @@ Registry: nvcr.io
     pip install -r /opt/requirements.txt
 
 %runscript
-    exec python3 /home/tobias.rothlin/GeoLocalization/src/DGX1/src/EncoderFineTuning/main.py
+    exec -a TRothlin_Pretraining python3 /home/tobias.rothlin/GeoLocalization/src/DGX1/src/EncoderFineTuning/main.py

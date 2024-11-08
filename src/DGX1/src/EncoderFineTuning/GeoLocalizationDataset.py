@@ -119,15 +119,14 @@ class GeoLocalizationDataset(Dataset):
         
 
     def __len__(self):
-        if self.load_for_contrast_learning:
-            return len(self.data) * 2
-        else:
             return len(self.data)
         
     def __getitem__(self, idx):
         if self.load_for_contrast_learning:
-            image_path_1, label_1 = self.data[idx % len(self.data)]
-            image_path_2, label_2 = self.data[idx // len(self.data)]
+            idx_1 = torch.randint(0, len(self.data), (1,)).item()
+            idx_2 = torch.randint(0, len(self.data), (1,)).item()
+            image_path_1, label_1 = self.data[idx_1]
+            image_path_2, label_2 = self.data[idx_2]
 
             if self.use_pre_calculated_embeddings:
                 image_1 = self.__load_vector(image_path_1)
@@ -147,7 +146,7 @@ class GeoLocalizationDataset(Dataset):
 
             
             label_1 = torch.tensor([label_1[0],label_1[1]], dtype=torch.float32)
-            label_2 = torch.tensor([label_1[0],label_1[1]], dtype=torch.float32)
+            label_2 = torch.tensor([label_2[0],label_2[1]], dtype=torch.float32)
 
             return image_1, image_2, label_1, label_2
 
