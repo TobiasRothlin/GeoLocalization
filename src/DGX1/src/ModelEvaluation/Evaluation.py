@@ -72,10 +72,15 @@ class Evaluation:
 
         return output
     
-    def to_file(self, file_path):
+    def to_file(self, file_path,name=None):
         if not file_path.endswith(".txt"):
             file_path += ".txt"
         with open(file_path, "w") as file:
+            file.write("Evaluation Results\n")
+            file.write("====================================\n")
+            if name:
+                file.write(name+"\n")
+
             file.write(str(self))
 
         

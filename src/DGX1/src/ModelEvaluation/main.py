@@ -2,8 +2,8 @@ import torch
 import os
 import sys
 
-RUN_PATH = "/home/tobias.rothlin/data/TrainingSnapshots/Regression_1_4"
-MODEL_WEIGHTS =RUN_PATH + "/model_end_of_epoch_0.pt"
+RUN_PATH = "/home/tobias.rothlin/data/TrainingSnapshots/Regression_3_0"
+MODEL_WEIGHTS =RUN_PATH + "/epoch_9_batch_20000.pt"
 MODEL_CONFIG = RUN_PATH + "/run_config.json"
 
 sys.path.append("/home/tobias.rothlin/GeoLocalization/src/DGX1/src/EncoderFineTuning")
@@ -122,17 +122,17 @@ if __name__ == '__main__':
 
     print("Evaluation Im2GPS")
     evaluation_test_im2gps.evaluate()
-    evaluation_test_im2gps.to_file(RUN_PATH+"/evaluation_im2gps.txt")
+    evaluation_test_im2gps.to_file(RUN_PATH+"/evaluation_im2gps.txt",name=MODEL_WEIGHTS)
     print(evaluation_test_im2gps)
     print(100*"=")
     print("Evaluation Im2GPS3K")
     evaluation_test_im2gps3k.evaluate()
-    evaluation_test_im2gps3k.to_file(RUN_PATH+"/evaluation_im2gps3k.txt")
+    evaluation_test_im2gps3k.to_file(RUN_PATH+"/evaluation_im2gps3k.txt",name=MODEL_WEIGHTS)
     print(evaluation_test_im2gps3k)
     print(100*"=")
     print("Evaluation Holdout")
     evaluation_test_holdout.evaluate()
-    evaluation_test_holdout.to_file(RUN_PATH+"/evaluation_holdout.txt")
+    evaluation_test_holdout.to_file(RUN_PATH+"/evaluation_holdout.txt",name=MODEL_WEIGHTS)
     print(evaluation_test_holdout)
     print(100*"=")
 

@@ -64,7 +64,7 @@ if __name__ == '__main__':
     
     device = checkCuda()
 
-    config_file = "./config_Pretraining_1.json"
+    config_file = "./config_Regression_3.json"
 
     print(f"Using Config File: {config_file}")
 
