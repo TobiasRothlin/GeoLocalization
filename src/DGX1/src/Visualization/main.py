@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
     print("\033[37m") # Light Gray
     
-    dl_Test = DataLocator(TEST_DATA_FOLDER)
-    dl_Train = DataLocator(TRAIN_DATA_FOLDER)
+    dl_Test = DataLocator(TEST_DATA_FOLDER,use_cache=False)
+    dl_Train = DataLocator(TRAIN_DATA_FOLDER,use_cache=False)
 
     test_files_json = dl_Test.get_files(".json")
 

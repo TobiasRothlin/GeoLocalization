@@ -13,6 +13,8 @@ import pandas as pd
 
 import dotenv
 
+import traceback
+
 import json
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -40,7 +42,12 @@ def check_file(json_path):
     
 
     with open(json_path, "r") as f:
-        data = json.load(f)
+        try:
+            data = json.load(f)
+        except Exception as e:
+            print(f"Error in check_file: {traceback.format_exc()}")
+            print(f"Error in check_file: {json_path}")
+            raise e 
         checks["Did Reverse Geocoding"] = data.get("DidReverseGeoLocation", None) is not None
         checks["Did Classification"] = data.get("DidClassification", None) is not None
 
@@ -141,7 +148,7 @@ def process_files(files, num_threads=64):
 
                 
             except Exception as e:
-                print(f"Error in process_files: {e.with_traceback()}")
+                print(f"Error in process_files: {traceback.format_exc()}")
     
     return results
 
@@ -168,7 +175,7 @@ def getLatLongFiles(files, num_threads=64):
                 result = future.result()
                 results.extend(result)
             except Exception as e:
-                print(f"Error in getLatLongFiles: {e.with_traceback()}")
+                print(f"Error in getLatLongFiles: {traceback.format_exc()}")
     
     return results
 
@@ -205,7 +212,7 @@ def getLatLongByCountryFiles(files, num_threads=64):
                     else:
                         results[country] = latlong
             except Exception as e:
-                print(f"Error in getLatLongByCountryFiles: {e.with_traceback()}")
+                print(f"Error in getLatLongByCountryFiles: {traceback.format_exc()}")
     
     return results
 

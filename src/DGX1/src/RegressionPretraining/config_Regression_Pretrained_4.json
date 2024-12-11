@@ -1,0 +1,185 @@
+{
+    "Runs": [
+        {
+            "Pretraining_weights": "/home/tobias.rothlin/data/TrainingSnapshots/Pretraining_1/model_end_of_epoch_0.pt",
+            "Pretraining_config": "/home/tobias.rothlin/data/TrainingSnapshots/Pretraining_1/run_config.json",
+            "DatasetConfig": {
+                "base_model": "openai/clip-vit-large-patch14-336",
+                "augmentaion_pipeline": [
+                    {
+                        "name": "RandomRotation",
+                        "params": {
+                            "degrees": 10
+                        }
+                    },
+                    {
+                        "name": "ColorJitter",
+                        "params": {
+                            "brightness": 0.5,
+                            "contrast": 0.2,
+                            "saturation": 0.4,
+                            "hue": 0.01
+                        }
+                    },
+                    {
+                        "name": "RandomPerspective",
+                        "params": {
+                            "distortion_scale": 0.2,
+                            "p": 0.5
+                        }
+                    }
+                ],
+                "normalize_labels": true,
+                "use_cached_dataloader": false,
+                "load_for_contrast_learning": false,
+                "use_pre_calculated_embeddings": false,
+                "load_pooling_output": false,
+                "use_gaussian_smoothing": true,
+                "workers": 4
+            },
+            "DataLoaderConfig": {
+                "Train": {
+                    "batch_size": 64,
+                    "shuffle": true,
+                    "num_workers": 8,
+                    "pin_memory": true,
+                    "prefetch_factor": 20
+                },
+                "Test": {
+                    "batch_size": 64,
+                    "shuffle": true,
+                    "num_workers": 8,
+                    "pin_memory": true,
+                    "prefetch_factor": 20
+                }
+            },
+            "ModelConfig": {
+                "use_location_head": false,
+                "use_similarity_head": false,
+                "freeze_base_model": true,
+                "RegressionHead": {
+                    "layer_group": [
+                        [
+                            {
+                                "type": "Linear",
+                                "in_features": 1024,
+                                "out_features": 1024
+                            },
+                            {
+                                "type": "Dropout",
+                                "p": 0.3
+                            },
+                            {
+                                "type": "LayerNorm",
+                                "normalized_shape": 1024
+                            },
+                            {
+                                "type": "ReLU"
+                            }
+                        ],
+                        [
+                            {
+                                "type": "Linear",
+                                "in_features": 1024,
+                                "out_features": 512
+                            },
+                            {
+                                "type": "Dropout",
+                                "p": 0.2
+                            },
+                            {
+                                "type": "LayerNorm",
+                                "normalized_shape": 512
+                            },
+                            {
+                                "type": "ReLU"
+                            }
+                        ],
+                        [
+                            {
+                                "type": "Linear",
+                                "in_features": 512,
+                                "out_features": 256
+                            },
+                            {
+                                "type": "Dropout",
+                                "p": 0.1
+                            },
+                            {
+                                "type": "LayerNorm",
+                                "normalized_shape": 256
+                            },
+                            {
+                                "type": "ReLU"
+                            }
+                        ],
+                        [
+                            {
+                                "type": "Linear",
+                                "in_features": 256,
+                                "out_features": 64
+                            },
+                            {
+                                "type": "Dropout",
+                                "p": 0.1
+                            },
+                            {
+                                "type": "LayerNorm",
+                                "normalized_shape": 64
+                            },
+                            {
+                                "type": "ReLU"
+                            }
+                        ],
+                        [
+                            {
+                                "type": "Linear",
+                                "in_features": 64,
+                                "out_features": 32
+                            },
+                            {
+                                "type": "Dropout",
+                                "p": 0.1
+                            },
+                            {
+                                "type": "LayerNorm",
+                                "normalized_shape": 32
+                            },
+                            {
+                                "type": "ReLU"
+                            }
+                        ],
+                        [
+                            {
+                                "type": "Linear",
+                                "in_features": 32,
+                                "out_features": 2
+                            },
+                            {
+                                "type": "Tanh"
+                            }
+                        ]
+                    ]
+                }
+            },
+            "TrainingConfig": {
+                "Epochs": 10,
+                "SaveEvery": 10000,
+                "RunName": "Regression_Pretrained_0",
+                "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
+                "LogMLFlow": false,
+                "MLFlowExperimentName": "ClipLocationDecoder",
+                "GradientAccumulationSteps": 1,
+                "ContrastLearningStrategy": null,
+                "LearningRate": 0.0001,
+                "Amsgrad": true,
+                "WeightDecay": 0.0001,
+                "Betas": [
+                    0.9,
+                    0.98
+                ],
+                "Gamma": 0.9
+            }
+        }
+    ]
+}

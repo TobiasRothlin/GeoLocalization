@@ -4,7 +4,8 @@ sys.path.append('/home/tobias.rothlin/GeoLocalization/src/DGX1/src/Utility')
 
 from DataLocator import DataLocator
 from CreateLableFile import createLableFile
-from ValidateFiles import check_json_files, check_for_valid_image_file_batched,find_dif_in_list
+from createdBatches import create_indipendent_batches
+from ValidateFiles import check_json_files, check_for_valid_image_file_batched,find_dif_in_list,check_for_empty_json_files
 from CreateMDFileRaport import createMDFileRaport
 
 from tqdm import tqdm
@@ -17,14 +18,23 @@ TEST_DATA_FOLDER = os.path.join(BASE_PATH, "Test")
 TRAIN_DATA_FOLDER = os.path.join(BASE_PATH, "Train")
 
 
+def find_matching_image_path(json_path):
+    image_path = json_path.replace('.json', '.jpg')
+    if not os.path.exists(image_path):
+        image_path = json_path.replace('.json', '.jpeg')
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(f"Could not find image for {json_path}")
+    return image_path
+
+
 if __name__ == "__main__":
 
     print("\033[37m") # Light Gray
 
     mdData = {}
     
-    dl_Test = DataLocator(TEST_DATA_FOLDER)
-    dl_Train = DataLocator(TRAIN_DATA_FOLDER)
+    dl_Test = DataLocator(TEST_DATA_FOLDER,use_cache=False)
+    dl_Train = DataLocator(TRAIN_DATA_FOLDER,use_cache=False)
 
     test_files_json = dl_Test.get_files(".json")
     test_files_jpg = dl_Test.get_files(".jpg")
@@ -175,23 +185,62 @@ if __name__ == "__main__":
     print("")
     print(100*"=")
 
+    print("Checking for empty JSON files")
+    print("Test Files:")
+    batched_files = create_indipendent_batches(test_files_json, 8)
+    empty_files = check_for_empty_json_files(batched_files, num_threads=8)
+
+    print(f"Found {len(empty_files)} empty files")
+
+    for file in empty_files:
+        print(f"    - {file}")
+
+    if len(empty_files) > 0:
+        print("Removing empty files...")
+        answer = input("Do you want to remove the empty files? (y/n): ")
+        if answer.lower() == "y":
+            for file in empty_files:
+                os.remove(find_matching_image_path(file))
+                os.remove(file)
+        else:
+            print("No files removed")
+
+    print("Train Files:")
+    batched_files = create_indipendent_batches(train_files_json, 8)
+    empty_files = check_for_empty_json_files(batched_files, num_threads=8)
+
+    print(f"Found {len(empty_files)} empty files")
+
+    for file in empty_files:
+        print(f"    - {file}")
+
+    if len(empty_files) > 0:
+        print("Removing empty files...")
+        answer = input("Do you want to remove the empty files? (y/n): ")
+        if answer.lower() == "y":
+            for file in empty_files:
+                os.remove(find_matching_image_path(file))
+                os.remove(file)
+        else:
+            print("No files removed")
+
     print("\033[0m")    # Reset Color
     print("\033[1m\u001b[32;1mTrain Files:\033[0m")
-    checks = check_json_files(train_files_json, num_threads=32) # Change to Train
+    checks = check_json_files(train_files_json, num_threads=8) # Change to Train
 
     mdData["Train"]["Checks"] = checks
 
     print(100*"-")
     print("\033[0m")    # Reset Color
     print("\033[1m\u001b[34;1mTest Files:\033[0m")
-    checks = check_json_files(test_files_json, num_threads=32)
+    checks = check_json_files(test_files_json, num_threads=8)
 
     mdData["Test"]["Checks"] = checks
 
     
     createMDFileRaport(mdData)
 
-    check_for_valid_image_file_batched(test_files_jpg + test_files_jpeg, num_threads=32,remove_invalid=True)
-    check_for_valid_image_file_batched(train_files_jpg + train_files_jpeg, num_threads=32,remove_invalid=True)
+    check_for_valid_image_file_batched(test_files_jpg + test_files_jpeg, num_threads=8,remove_invalid=True)
+    check_for_valid_image_file_batched(train_files_jpg + train_files_jpeg, num_threads=8,remove_invalid=True)
     
     print("\033[0m Done")    # Reset Color

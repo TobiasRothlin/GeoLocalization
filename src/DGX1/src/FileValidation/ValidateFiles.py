@@ -15,7 +15,6 @@ from tqdm import tqdm
 
 from PIL import Image
 
-
 def print_bar_chart(a, b, bar_length=50,color_a = "\033[32m", color_b = "\033[31m", reset_color = "\033[0m"):
     total = a + b
     if total == 0:
@@ -65,7 +64,16 @@ def check_single_file(json_file, required_keys=None):
     if required_keys is None:
         required_keys = ["city", "country", "lat", "lon", "PredictedPopulationArea", "PredictedRegion", "DidReverseGeoLocation", "DidClassification"]
     with open(json_file, "r") as f:
+        file_content = f.read()
+        if len(file_content) == 0:
+            checkes["EmptyFile"] = True
+            return checkes
+        else:
+            checkes["EmptyFile"] = False
+
+    with open(json_file, "r") as f:
         data = json.load(f)
+        
     for key in required_keys:
         checkes[key] = key in data
 
@@ -102,7 +110,8 @@ def check_batch_of_files(json_batch):
         "DidReverseGeoLocation": 0,
         "DidClassification": 0,
         "ImageExists": 0,
-        "CanOpenImage": 0
+        "CanOpenImage": 0,
+        "EmptyFile": 0
     }
 
     for file in json_batch:
@@ -121,7 +130,7 @@ def check_json_files(json_files, num_threads=16):
 
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = {executor.submit(check_batch_of_files, batch): batch for batch in json_batches}
-        checks = {key: 0 for key in ["city", "country", "lat", "lon", "PredictedPopulationArea", "PredictedRegion", "DidReverseGeoLocation", "DidClassification", "ImageExists", "CanOpenImage"]}
+        checks = {key: 0 for key in ["city", "country", "lat", "lon", "PredictedPopulationArea", "PredictedRegion", "DidReverseGeoLocation", "DidClassification", "ImageExists", "CanOpenImage","EmptyFile"]}
         for future in tqdm(as_completed(futures), total=len(futures), desc=f"Checking files"):
             res = future.result()
             for key in res:
@@ -222,3 +231,28 @@ def check_for_valid_image_file_batched(image_paths, num_threads=16,remove_invali
 
 
     return checks
+
+
+def check_if_json_file_is_empty(json_path):
+    with open(json_path, "r") as f:
+        data = f.read()
+        if len(data) == 0:
+            return True
+        else:
+            return False
+        
+def check_if_json_files_are_empty(json_files,id=0):
+    empty_files = []
+    for file in tqdm(json_files, desc=f"Checking empty files in Batch {id}"):
+        if check_if_json_file_is_empty(file):
+            empty_files.append(file)
+    return empty_files
+
+def check_for_empty_json_files(json_files_batched,num_threads=16):
+    empty_files = []
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        futures = {executor.submit(check_if_json_files_are_empty, batch, idx): batch for idx,batch in enumerate(json_files_batched)}
+        for future in as_completed(futures):
+            res = future.result()
+            empty_files.extend(res)
+    return empty_files

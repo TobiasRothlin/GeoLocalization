@@ -64,7 +64,7 @@ if __name__ == '__main__':
     
     device = checkCuda()
 
-    config_file = "./config_Regression_3.json"
+    config_file = "./config_Regression_Limited_England.json"
 
     print(f"Using Config File: {config_file}")
 
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
             print(f"Training Dataset: {len(dataset_train)}")
             print(f"Test Dataset: {len(dataset_test)}")
-                
+  
             model = LocationDecoder(config["ModelConfig"],
                                     base_model=config["DatasetConfig"]["base_model"],
                                     use_pre_calculated_embeddings=config["DatasetConfig"]["use_pre_calculated_embeddings"],

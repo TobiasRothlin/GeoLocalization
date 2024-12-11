@@ -8,7 +8,7 @@
                 "use_cached_dataloader": false,
                 "load_for_contrast_learning": false,
                 "use_pre_calculated_embeddings": true,
-                "load_pooling_output":true,
+                "load_pooling_output": true,
                 "use_gaussian_smoothing": false,
                 "workers": 4
             },
@@ -32,7 +32,6 @@
                 "use_location_head": false,
                 "use_similarity_head": false,
                 "freeze_base_model": true,
-
                 "RegressionHead": {
                     "layer_group": [
                         [
@@ -52,8 +51,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -71,8 +69,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -90,8 +87,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -109,8 +105,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -128,8 +123,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -147,8 +141,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -166,8 +159,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -185,8 +177,7 @@
                             {
                                 "type": "Tanh"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -200,8 +191,7 @@
                     ]
                 }
             },
-            "TrainingConfig":
-            {   
+            "TrainingConfig": {
                 "Epochs": 10,
                 "SaveEvery": 10000,
                 "RunName": "Regression_3",
@@ -251,7 +241,7 @@
                 "use_cached_dataloader": false,
                 "load_for_contrast_learning": false,
                 "use_pre_calculated_embeddings": false,
-                "load_pooling_output":false,
+                "load_pooling_output": false,
                 "use_gaussian_smoothing": true,
                 "workers": 4
             },
@@ -272,10 +262,26 @@
                 }
             },
             "ModelConfig": {
-                "use_location_head": false,
+                "use_location_head": true,
                 "use_similarity_head": false,
                 "freeze_base_model": true,
-
+                "LocationHeadClip": {
+                    "mean_locatation_head_output": false,
+                    "layers": [
+                        {
+                            "d_model": 1024,
+                            "nhead": 8
+                        },
+                        {
+                            "d_model": 1024,
+                            "nhead": 8
+                        }
+                    ],
+                    "linear_layer_mapping": {
+                        "in_features": 1024,
+                        "out_features": 1024
+                    }
+                },
                 "RegressionHead": {
                     "layer_group": [
                         [
@@ -295,8 +301,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -314,8 +319,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -333,8 +337,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -352,8 +355,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -371,8 +373,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -390,8 +391,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -409,8 +409,7 @@
                             {
                                 "type": "ReLU"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -428,8 +427,7 @@
                             {
                                 "type": "Tanh"
                             }
-                        ]
-                        ,
+                        ],
                         [
                             {
                                 "type": "Linear",
@@ -443,8 +441,7 @@
                     ]
                 }
             },
-            "TrainingConfig":
-            {   
+            "TrainingConfig": {
                 "Epochs": 10,
                 "SaveEvery": 10000,
                 "RunName": "Regression_3",

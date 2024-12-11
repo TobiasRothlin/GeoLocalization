@@ -14,3 +14,4 @@ mlflow~=2.17.0rc0
 python-dotenv~=1.0.1
 ipywidgets~=8.1.5
 kaleido~=0.2.1
+pycountry-convert~=0.7.2

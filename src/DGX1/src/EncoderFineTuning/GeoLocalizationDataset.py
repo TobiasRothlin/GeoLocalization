@@ -39,7 +39,9 @@ class GeoLocalizationDataset(Dataset):
                     workers=16,
                     error_file="error_file_dataset.txt",
                     timing_log="timing_log.txt",
-                    use_gaussian_smoothing=False):
+                    use_gaussian_smoothing=False,
+                    limit_data_by_continent=None,
+                    limit_data_by_country=None):
                  
         self.dataset_folder = dataset_folder
 
@@ -62,6 +64,15 @@ class GeoLocalizationDataset(Dataset):
         self.use_gaussian_smoothing = use_gaussian_smoothing
 
         self.error_file = error_file
+
+        self.limit_data_by_continent = limit_data_by_continent
+        self.limit_data_by_country = limit_data_by_country
+
+        if self.limit_data_by_continent is not None:
+            print(f"Limiting data to continent: {self.limit_data_by_continent}")
+
+        if self.limit_data_by_country is not None:
+            print(f"Limiting data to country: {self.limit_data_by_country}")
 
         with open(self.error_file, "w") as f:
             f.write("")
@@ -200,7 +211,8 @@ class GeoLocalizationDataset(Dataset):
         for json_file in progress_bar:
             try:
                 image_path, label = self.__process_json_file(json_file)
-                collected_data.append((image_path, label))
+                if image_path is not None and label is not None:
+                    collected_data.append((image_path, label))
 
             except Exception as e:
                 with open(self.error_file, "a") as f:
@@ -210,6 +222,12 @@ class GeoLocalizationDataset(Dataset):
             progress_bar.update(1)
 
         progress_bar.close()
+
+        if self.limit_data_by_continent is not None:
+            print(f"Filtered {len(json_files) - len(collected_data)} by continent")
+
+        if self.limit_data_by_country is not None:
+            print(f"Filtered {len(json_files) - len(collected_data)} by country")
 
         return collected_data
     
@@ -222,6 +240,14 @@ class GeoLocalizationDataset(Dataset):
         
         lat = data["lat"]
         lon = data["lon"]
+
+        if self.limit_data_by_continent is not None:
+            if data["continent"] != self.limit_data_by_continent:
+                return None, None
+        
+        if self.limit_data_by_country is not None:
+            if data["country"] != self.limit_data_by_country:
+                return None, None
 
         if self.use_pre_calculated_embeddings:
             if self.load_pooling_output:

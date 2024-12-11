@@ -2,8 +2,8 @@ import torch
 import os
 import sys
 
-RUN_PATH = "/home/tobias.rothlin/data/TrainingSnapshots/Regression_3_0"
-MODEL_WEIGHTS =RUN_PATH + "/epoch_9_batch_20000.pt"
+RUN_PATH = "/home/tobias.rothlin/data/TrainingSnapshots/Regression_Europe_France"
+MODEL_WEIGHTS =RUN_PATH + "/model_end_of_epoch_1.pt"
 MODEL_CONFIG = RUN_PATH + "/run_config.json"
 
 sys.path.append("/home/tobias.rothlin/GeoLocalization/src/DGX1/src/EncoderFineTuning")
@@ -137,6 +137,7 @@ if __name__ == '__main__':
     print(100*"=")
 
     try:
+        raise Exception("Test")
         dotenv.load_dotenv(dotenv.find_dotenv())
 
         os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
