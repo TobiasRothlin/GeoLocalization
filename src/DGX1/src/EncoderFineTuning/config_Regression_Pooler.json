@@ -2,51 +2,26 @@
     "Runs": [
         {
             "DatasetConfig": {
-                "base_model": "openai/clip-vit-large-patch14-336",
-                "augmentaion_pipeline": [
-                    {
-                        "name": "RandomRotation",
-                        "params": {
-                            "degrees": 10
-                        }
-                    },
-                    {
-                        "name": "ColorJitter",
-                        "params": {
-                            "brightness": 0.5,
-                            "contrast": 0.2,
-                            "saturation": 0.4,
-                            "hue": 0.01
-                        }
-                    },
-                    {
-                        "name": "RandomPerspective",
-                        "params": {
-                            "distortion_scale": 0.2,
-                            "p": 0.5
-                        }
-                    }
-                ],
+                "base_model": "geolocal/StreetCLIP",
+                "augmentaion_pipeline": null,
                 "normalize_labels": true,
                 "use_cached_dataloader": false,
                 "load_for_contrast_learning": false,
-                "use_pre_calculated_embeddings": false,
-                "load_pooling_output": false,
-                "use_gaussian_smoothing": false,
-                "workers": 4,
-                "limit_data_by_continent": "Europe",
-                "limit_data_by_country": null
+                "use_pre_calculated_embeddings": true,
+                "load_pooling_output": true,
+                "use_gaussian_smoothing": true,
+                "workers": 4
             },
             "DataLoaderConfig": {
                 "Train": {
-                    "batch_size": 64,
+                    "batch_size": 524288,
                     "shuffle": true,
                     "num_workers": 8,
                     "pin_memory": true,
                     "prefetch_factor": 20
                 },
                 "Test": {
-                    "batch_size": 64,
+                    "batch_size": 524288,
                     "shuffle": true,
                     "num_workers": 8,
                     "pin_memory": true,
@@ -54,26 +29,9 @@
                 }
             },
             "ModelConfig": {
-                "use_location_head": true,
+                "use_location_head": false,
                 "use_similarity_head": false,
                 "freeze_base_model": true,
-                "LocationHeadClip": {
-                    "mean_locatation_head_output": false,
-                    "layers": [
-                        {
-                            "d_model": 1024,
-                            "nhead": 8
-                        },
-                        {
-                            "d_model": 1024,
-                            "nhead": 8
-                        }
-                    ],
-                    "linear_layer_mapping": {
-                        "in_features": 1024,
-                        "out_features": 1024
-                    }
-                },
                 "RegressionHead": {
                     "layer_group": [
                         [
@@ -180,9 +138,9 @@
                 }
             },
             "TrainingConfig": {
-                "Epochs": 2,
-                "SaveEvery": 1000,
-                "RunName": "Regression_Europe",
+                "Epochs": 100,
+                "SaveEvery": 10000,
+                "RunName": "Regression_Pooler_StreetClip",
                 "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
                 "LogMLFlow": false,
                 "MLFlowExperimentName": "ClipLocationDecoder",

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 SIF_FOLDER="/home/tobias.rothlin/data/SIF"
-IMAGE_NAME="$SIF_FOLDER/PrecalculatedImageVectorsPipeline.sif"
-DEFINITION_FILE="/home/tobias.rothlin/GeoLocalization/src/DGX1/src/PrecalculatedImageVectors/PrecalculatedImageVectors.def"
-TMUX_SESSION="precalculate_image_vector_pipeline_session"
+IMAGE_NAME="$SIF_FOLDER/HybridModelEvaluation.sif"
+DEFINITION_FILE="/home/tobias.rothlin/GeoLocalization/src/DGX1/src/HybridModelEvaluation/HybridModelEvaluation.def"
+TMUX_SESSION="evaluation_hybrid_pipeline_session"
 LOG_FILE="/home/tobias.rothlin/data/Logs/Training_output_$(date +"%Y-%m-%d_%H-%M-%S").log"
 
 

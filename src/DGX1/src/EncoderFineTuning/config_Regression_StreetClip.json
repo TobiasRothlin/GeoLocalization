@@ -2,7 +2,7 @@
     "Runs": [
         {
             "DatasetConfig": {
-                "base_model": "openai/clip-vit-large-patch14-336",
+                "base_model": "geolocal/StreetCLIP",
                 "augmentaion_pipeline": [
                     {
                         "name": "RandomRotation",
@@ -32,10 +32,8 @@
                 "load_for_contrast_learning": false,
                 "use_pre_calculated_embeddings": false,
                 "load_pooling_output": false,
-                "use_gaussian_smoothing": false,
-                "workers": 4,
-                "limit_data_by_continent": "Europe",
-                "limit_data_by_country": null
+                "use_gaussian_smoothing": true,
+                "workers": 4
             },
             "DataLoaderConfig": {
                 "Train": {
@@ -180,9 +178,9 @@
                 }
             },
             "TrainingConfig": {
-                "Epochs": 2,
-                "SaveEvery": 1000,
-                "RunName": "Regression_Europe",
+                "Epochs": 10,
+                "SaveEvery": 10000,
+                "RunName": "Regression_StreetClip",
                 "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
                 "LogMLFlow": false,
                 "MLFlowExperimentName": "ClipLocationDecoder",
@@ -198,5 +196,6 @@
                 "Gamma": 0.9
             }
         }
+        
     ]
 }

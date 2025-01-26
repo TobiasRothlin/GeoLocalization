@@ -31,6 +31,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+*.txt
 
 # Installer logs
 pip-log.txt
@@ -193,3 +194,4 @@ src/DGX1/test.sif
 /src/DGX1/src/Visualization/.env
 
 /src/DGX1/src/MapillaryCollection/.apiTokenMapillary
+

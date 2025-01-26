@@ -1,3 +1,0 @@
-Error in put_locations_to_json_files: 'lat'
-Error in put_locations_to_json_files: 'lat'
-Error in put_locations_to_json_files: 'lat'

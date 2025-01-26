@@ -13,7 +13,7 @@ def calculate_mean_of_images(image_paths):
     """
 
     mean = np.zeros((336, 336, 3))
-    for image_path in image_paths:
+    for image_path in tqdm(image_paths, desc="Calculating Mean"):
         image = Image.open(image_path)
 
         image = image.resize((336, 336))
@@ -31,31 +31,11 @@ def calculate_mean_of_images(image_paths):
 def findDominantRegionsInImages(image_paths):
     mean_image = calculate_mean_of_images(image_paths)
 
-    output_folder = "/".join(image_paths[0].split("/")[:len(image_paths[0].split("/")) - 1])
-
-    mean_image -= 0.5
-    mean_image = np.abs(mean_image)
  
     mean_image = mean_image * 255
 
+
     pil_image = Image.fromarray(np.uint8(mean_image))
-    pil_image.save(f"{output_folder}/mean_image.jpg")
+    return pil_image
 
-
-def findDominantRegionsInImagesbatched(dict_with_folders, num_threads=8):
-    folders = list(dict_with_folders.keys())
-
-    with open("./Errors.txt", "w") as f:
-        f.write("")
-
-    with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = [executor.submit(findDominantRegionsInImages, dict_with_folders[folder]) for folder in tqdm(folders, desc="Creating Threads")]
-        for future in tqdm(as_completed(futures), total=len(futures), desc="Waiting for threads",):
-            try:
-                future.result()
-            except Exception as e:
-                with open("./Errors.txt", "a") as f:
-                    f.write(f"Error in put_locations_to_json_files: {e}\n")
-
-        print("Done")
     

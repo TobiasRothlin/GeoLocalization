@@ -34,7 +34,7 @@
                 "load_pooling_output": false,
                 "use_gaussian_smoothing": false,
                 "workers": 4,
-                "limit_data_by_continent": "Europe",
+                "limit_data_by_continent": "Oceania",
                 "limit_data_by_country": null
             },
             "DataLoaderConfig": {
@@ -180,15 +180,15 @@
                 }
             },
             "TrainingConfig": {
-                "Epochs": 2,
+                "Epochs": 5,
                 "SaveEvery": 1000,
-                "RunName": "Regression_Europe",
+                "RunName": "Regression_Oceania",
                 "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
                 "LogMLFlow": false,
                 "MLFlowExperimentName": "ClipLocationDecoder",
-                "GradientAccumulationSteps": 1,
+                "GradientAccumulationSteps": 2,
                 "ContrastLearningStrategy": null,
-                "LearningRate": 0.0001,
+                "LearningRate": 0.000001,
                 "Amsgrad": true,
                 "WeightDecay": 0.0001,
                 "Betas": [

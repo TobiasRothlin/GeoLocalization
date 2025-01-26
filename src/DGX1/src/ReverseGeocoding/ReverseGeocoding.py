@@ -33,6 +33,9 @@ country_to_continent_mapping = {
     "Curacao": "North America",
     "Aland Islands": "Europe",
     "Cote d'Ivoire": "Africa",
+    "Timor-Leste": "Asia",
+    "Saint Helena": "Africa",
+    "Western Sahara": "Africa",
 }
 
 
@@ -129,7 +132,13 @@ def put_location_to_json(json_file):
 
     if location is None:
         return
-    
+    if "city" not in data:
+        data["city"] = None
+    if "country" not in data:
+        data["country"] = None
+    if "continent" not in data:
+        data["continent"] = None
+
     if data["city"] is None:
         data["city"] = location["city"]
 
@@ -138,6 +147,24 @@ def put_location_to_json(json_file):
 
     if data["continent"] is None:
         data["continent"] = location["continent"]
+
+    if data["continent"] == "":
+        if not location["continent"] == "":
+            data["continent"] = location["continent"]
+        else:
+            raise ValueError(f"Continent is empty: {json_file} in file: {json_file}")
+    
+    if data["country"] == "":
+        if not location["country"] == "":
+            data["country"] = location["country"]
+        else:
+            raise ValueError(f"Country is empty: {json_file} in file: {json_file}")
+    
+    if data["city"] == "":
+        if not location["city"] == "":
+            data["city"] = location["city"]
+        else:
+            raise ValueError(f"City is empty: {json_file} in file: {json_file}")
 
     data["DidReverseGeoLocation"] = True
 

@@ -3,6 +3,8 @@ import os
 import mlflow   
 import dotenv
 
+import shutil
+
 import json
 
 from tqdm import tqdm
@@ -33,8 +35,9 @@ class SingleGPUTrainer:
                  log_mlflow=False,
                  mlflow_experiment_name=None,
                  full_run_config=None,
-                 contrast_learning_strategy=None,
-                 run_name=None):
+                 run_name=None,
+                 output_lable_dict_train=None,
+                 output_lable_dict_test=None):
         
         self.train_dataloader = DataLoader(train_dataset,**train_dataloader_config)
         self.test_dataloader = DataLoader(test_dataset,**test_dataloader_config)
@@ -48,13 +51,7 @@ class SingleGPUTrainer:
         self.log_mlflow = log_mlflow
         self.mlflow_experiment_name = mlflow_experiment_name
 
-        self.is_first_batch = True
-
         run_name = run_name if run_name is not None else "run"
-
-        self.haversine_loss = HaversineLoss(use_standarized_input=train_dataset.normalize_labels)
-
-        self.contrast_learning_strategy = contrast_learning_strategy
 
         if self.mlflow_experiment_name is None:
             print("No MLFlow Experiment Name provided. Disabling MLFlow Logging")
@@ -62,8 +59,10 @@ class SingleGPUTrainer:
         self.gradient_accumulation_steps = gradient_accumulation_steps
         self.snapshot_path = snapshot_path
         
-        self.loss_average_train = MovingAverage(len(train_dataloader))
-        self.loss_average_test = MovingAverage(len(test_dataloader))
+        self.loss_average_train = MovingAverage(2*self.gradient_accumulation_steps)
+        self.accuracy_average_train = MovingAverage(2*self.gradient_accumulation_steps)
+        self.loss_average_test = MovingAverage(2*self.gradient_accumulation_steps)
+        self.accuracy_average_test = MovingAverage(2*self.gradient_accumulation_steps)
 
         if not os.path.exists(self.snapshot_path):
             os.makedirs(self.snapshot_path)
@@ -81,19 +80,21 @@ class SingleGPUTrainer:
             with open(os.path.join(self.snapshot_folder_path, "run_config.json"), "w") as f:
                 json.dump(full_run_config, f, indent=4)
 
+        if output_lable_dict_train is not None:
+            shutil.copy(output_lable_dict_train, os.path.join(self.snapshot_folder_path, "output_lable_dict_train.json"))
+
+        if output_lable_dict_test is not None:
+            shutil.copy(output_lable_dict_test, os.path.join(self.snapshot_folder_path, "output_lable_dict_test.json"))
+
         self.tensorboard_writer = SummaryWriter(log_dir=os.path.join(self.snapshot_folder_path, "tensorboard"))
         self.training_log_file = os.path.join(self.snapshot_folder_path, "training.log")
 
         print(f"Model is on Device: {self.model.get_device()}")
 
-        if self.contrast_learning_strategy:
-            print("Using Contrast Learning Strategy")
-            print(f"Strategy: {self.contrast_learning_strategy}")
-            model_input,_,model_output,_ = self.test_dataloader.dataset[0]
-        else:
-            model_input,model_output = self.test_dataloader.dataset[0]
+        model_input,model_output = self.test_dataloader.dataset[0]
 
         print(f"Batch Size: {model_input.shape}")
+        print(f"Model Output: {model_output.shape}")
 
         model_input = model_input.unsqueeze(0).to(self.device)
 
@@ -107,14 +108,20 @@ class SingleGPUTrainer:
         with open(self.training_log_file, "w") as f:
             f.write("")
 
-    def __run_regression(self, batch,batch_idx,is_train):
-        input_vec, targets = batch
+    def evaluate_accuracy_on_batch(self,output, targets):
+        output = torch.clone(output.detach().cpu())
+        targets = torch.clone(targets.detach().cpu())
 
-        if self.is_first_batch:
-            print(f"Input Shape: {input_vec.shape}")
-            print(f"Target Shape: {targets.shape}")
-            self.is_first_batch = False
+        _, predicted = torch.max(output, 1)
+        _, true_labels = torch.max(targets, 1)
+        correct = (predicted == true_labels).sum().item()
+        total = targets.size(0)
+        return correct / total
         
+
+
+    def __run_classification(self, batch,batch_idx,is_train):
+        input_vec, targets = batch
 
         if is_train:
             input_vec = input_vec.to(self.device)
@@ -122,52 +129,12 @@ class SingleGPUTrainer:
 
             outputs = self.model(input_vec)
 
+            acc = self.evaluate_accuracy_on_batch(outputs, targets)
+
             loss = self.loss_function(outputs, targets)
-            if not torch.isnan(loss):
-                self.loss_average_train.add(loss.item())
-
-            loss = loss / self.gradient_accumulation_steps
-
-            if not torch.isnan(loss):
-                loss.backward()
-
-                if batch_idx % self.gradient_accumulation_steps == 0:
-                    self.optimizer.step()
-                    self.optimizer.zero_grad()
-        else:
-            with torch.no_grad():
-                input_vec = input_vec.to(self.device)
-                targets = targets.to(self.device)
-
-                outputs = self.model(input_vec)
-
-                loss = self.loss_function(outputs, targets)
-            self.loss_average_test.add(loss.item())
-
-    def __run_contrast_similarity(self, batch,batch_idx,is_train):
-        vec_1, vec_2, location_1, location_2 = batch
-        distance = self.haversine_loss.haversine(location_1, location_2)
-        distance_norm = distance / 20_016 # Normalize distance to 0,1
-        similarity = 1 - distance_norm # Similarity is 1 - distance since the closer the points the more similar they are
-
-        if is_train:
-            vec_1 = vec_1.to(self.device)
-            vec_2 = vec_2.to(self.device)
-            
-
-            embedding_1 = self.model(vec_1)
-            embedding_2 = self.model(vec_2)
-
-            if self.contrast_learning_strategy == "CosignSimilarityLoss":
-                similarity = similarity.to(self.device)
-                loss = self.loss_function(embedding_1, embedding_2, similarity)
-            elif self.contrast_learning_strategy == "EuclidianDistanceLoss":
-                distance = distance.to(self.device)
-                loss = self.loss_function(embedding_1, embedding_2, distance)
-            else:
-                raise ValueError("Contrast Learning Strategy not recognized")
 
             self.loss_average_train.add(loss.item())
+            self.accuracy_average_train.add(acc)
 
             loss = loss / self.gradient_accumulation_steps
 
@@ -178,39 +145,39 @@ class SingleGPUTrainer:
                 self.optimizer.zero_grad()
         else:
             with torch.no_grad():
-                vec_1 = vec_1.to(self.device)
-                vec_2 = vec_2.to(self.device)
-                distance = distance.to(self.device)
+                input_vec = input_vec.to(self.device)
+                targets = targets.to(self.device)
 
-                embedding_1 = self.model(vec_1)
-                embedding_2 = self.model(vec_2)
+                outputs = self.model(input_vec)
 
-                loss = self.loss_function(embedding_1, embedding_2, distance)
+                loss = self.loss_function(outputs, targets)
+                acc = self.evaluate_accuracy_on_batch(outputs, targets)
+            self.accuracy_average_test.add(acc)
             self.loss_average_test.add(loss.item())
 
 
 
 
+
     def __run_single_batch(self, batch,batch_idx,is_train):
-        if self.contrast_learning_strategy:
-            self.__run_contrast_similarity(batch,batch_idx,is_train)
-        else:
-            self.__run_regression(batch,batch_idx,is_train)
+        self.__run_classification(batch,batch_idx,is_train)
     
     def __run_epoch(self, dataloader, epoch,with_logging=True,is_train=True):
         prefix = "Train" if is_train else "Test"
-        progress_bar = tqdm(dataloader, desc=f"{prefix}Epoch {epoch}", postfix=f"Loss {self.loss_average_train.get():.5f}")
+        progress_bar = tqdm(dataloader, desc=f"{prefix}Epoch {epoch}", postfix=f"Loss:{self.loss_average_train.get():.5f} Acc:{self.accuracy_average_train.get()*100:.5f}%")
         for batch_idx, batch in enumerate(progress_bar):
             self.__run_single_batch(batch,batch_idx,is_train)
 
             if is_train:
-                progress_bar.set_postfix_str(f"Loss {self.loss_average_train.get():.5f}")
-                self.log(f"Train,Epoch:{epoch},Batch:{batch_idx},Loss:{self.loss_average_train.get():.5f}")
+                progress_bar.set_postfix_str(f"Loss {self.loss_average_train.get():.5f} Acc:{self.accuracy_average_train.get()*100:.5f}%")
+                self.log(f"Train,Epoch:{epoch},Batch:{batch_idx},Loss:{self.loss_average_train.get():.5f},Acc:{self.accuracy_average_train.get()*100:.5f}%")
                 self.tensorboard_writer.add_scalar('Loss/train', self.loss_average_train.get(), epoch * len(dataloader) + batch_idx)
+                self.tensorboard_writer.add_scalar('Accuracy/train', self.accuracy_average_train.get(), epoch * len(dataloader) + batch_idx)
             else:
-                progress_bar.set_postfix_str(f"Loss {self.loss_average_test.get():.5f}")
-                self.log(f"Test,Epoch:{epoch},Batch:{batch_idx},Loss:{self.loss_average_test.get():.5f}")
+                progress_bar.set_postfix_str(f"Loss {self.loss_average_test.get():.5f} Acc:{self.accuracy_average_train.get()*100:.5f}%")
+                self.log(f"Test,Epoch:{epoch},Batch:{batch_idx},Loss:{self.loss_average_test.get():.5f},Acc:{self.accuracy_average_test.get()*100:.5f}%")
                 self.tensorboard_writer.add_scalar('Loss/test', self.loss_average_test.get(), epoch * len(dataloader) + batch_idx)
+                self.tensorboard_writer.add_scalar('Accuracy/test', self.accuracy_average_test.get(), epoch * len(dataloader) + batch_idx)
 
             if with_logging:
                 if batch_idx % self.log_interval == 0:
@@ -223,10 +190,12 @@ class SingleGPUTrainer:
             if is_train:
                 if self.log_mlflow:
                     mlflow.log_metric("train_loss", self.loss_average_train.get(), step=epoch)
+                    mlflow.log_metric("train_accuracy", self.accuracy_average_train.get(), step=epoch)
                     
             else:
                 if self.log_mlflow:
                     mlflow.log_metric("test_loss", self.loss_average_test.get(), step=epoch)
+                    mlflow.log_metric("test_accuracy", self.accuracy_average_test.get(), step=epoch)
         except Exception as e:
             print("Could not connect to MLFlow")
             print(e)

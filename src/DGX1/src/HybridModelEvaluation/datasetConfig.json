@@ -1,0 +1,52 @@
+{
+    "DatasetConfig": {
+        "base_model": "openai/clip-vit-large-patch14-336",
+        "augmentaion_pipeline": [
+            {
+                "name": "RandomRotation",
+                "params": {
+                    "degrees": 10
+                }
+            },
+            {
+                "name": "ColorJitter",
+                "params": {
+                    "brightness": 0.5,
+                    "contrast": 0.2,
+                    "saturation": 0.4,
+                    "hue": 0.01
+                }
+            },
+            {
+                "name": "RandomPerspective",
+                "params": {
+                    "distortion_scale": 0.2,
+                    "p": 0.5
+                }
+            }
+        ],
+        "normalize_labels": true,
+        "use_cached_dataloader": false,
+        "load_for_contrast_learning": false,
+        "use_pre_calculated_embeddings": false,
+        "load_pooling_output": false,
+        "use_gaussian_smoothing": true,
+        "workers": 4
+    },
+    "DataLoaderConfig": {
+        "Train": {
+            "batch_size": 64,
+            "shuffle": true,
+            "num_workers": 8,
+            "pin_memory": true,
+            "prefetch_factor": 20
+        },
+        "Test": {
+            "batch_size": 64,
+            "shuffle": true,
+            "num_workers": 8,
+            "pin_memory": true,
+            "prefetch_factor": 20
+        }
+    }
+}

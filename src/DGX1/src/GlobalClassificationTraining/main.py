@@ -13,14 +13,13 @@ import mlflow
 
 import traceback
 
-from GeoLocalizationDataset import GeoLocalizationDataset
+from GeoLocalizationDatasetClassification import GeoLocalizationClassificationDataset
 
 from Model import LocationDecoder
 from HaversineLoss import HaversineLoss
 from CosignSimilarityLoss import CosignSimilarityLoss
 from EuclidianDistanceLoss import EuclidianDistanceLoss
 from SingleGPUTrainer import SingleGPUTrainer
-from MultiGPUTrainer import MultiGPUTraining
 
 BASE_PATH = "/home/tobias.rothlin/data/GeoDataset"
 # BASE_PATH = "/Users/tobiasrothlin/Documents/MSE/Dataset"
@@ -52,19 +51,15 @@ def checkCuda():
     return "cuda" if torch.cuda.is_available() else "cpu"
 
 
-def get_latest_model_checkpoint(path):
-    files = os.listdir(path)
-    files = [f for f in files if f.endswith(".pt")]
-    files = sorted(files, key=lambda x: (int(x.split("_")[1])+1)*int(x.split("_")[3].replace(".pt","")))
-    return os.path.join(path,files[-1])
-
-
 
 if __name__ == '__main__':
     
     device = checkCuda()
 
-    config_file = "./config_Regression_Pooler.json"
+    config_file = "./config_Classification_Country_Oceania.json"
+
+    label_dict_train_path = "./label_dict_train.json"
+    label_dict_test_path = "./label_dict_test.json"
 
     print(f"Using Config File: {config_file}")
 
@@ -73,40 +68,43 @@ if __name__ == '__main__':
 
     for config in configs["Runs"]:
         try:
-            if "ResumeFromPreviousRun" in config:
-                print("Resuming from previous run")
-                did_resume = True
-                previous_run_path = config["ResumeFromPreviousRun"]
+            dataset_train = GeoLocalizationClassificationDataset(TRAIN_DATA_FOLDER,**config["DatasetConfig"])
+            dataset_train.save_label_dict(label_dict_train_path)
+
+            dataset_test = GeoLocalizationClassificationDataset(TEST_DATA_FOLDER,**config["DatasetConfig"])
+            dataset_test.set_label_dict(dataset_train.get_label_dict())
+            dataset_test.save_label_dict(label_dict_test_path)
+
+            if "UseClassWeightsCrossEntropy" in config["TrainingConfig"] and config["TrainingConfig"]["UseClassWeightsCrossEntropy"]:
+                print("Using Class Weights")
+                class_weights = dataset_train.get_label_histogram()
+                class_weights = class_weights.to(device)
+                print(class_weights)
             else:
-                did_resume = False
-                previous_run_path = None
-
-            dataset_test = GeoLocalizationDataset(TEST_DATA_FOLDER,**config["DatasetConfig"])
-            dataset_train = GeoLocalizationDataset(TRAIN_DATA_FOLDER,**config["DatasetConfig"])
-
+                class_weights = None
+            
             print(f"Training Dataset: {len(dataset_train)}")
             print(f"Test Dataset: {len(dataset_test)}")
-  
+
+            dataloader_train = torch.utils.data.DataLoader(dataset_train, **config["DataLoaderConfig"]["Train"])
+            dataloader_test = torch.utils.data.DataLoader(dataset_test, **config["DataLoaderConfig"]["Test"])
+
+            batch = next(iter(dataloader_train))
+            
+            image, label = batch
+
+            print(f"Image Shape: {image.shape}")
+            print(f"Label Shape: {label.shape}")
+
             model = LocationDecoder(config["ModelConfig"],
                                     base_model=config["DatasetConfig"]["base_model"],
                                     use_pre_calculated_embeddings=config["DatasetConfig"]["use_pre_calculated_embeddings"],
                                     freeze_base_model=config["ModelConfig"]["freeze_base_model"],)
-            if did_resume:
-                model.load("/home/tobias.rothlin/data/TrainingSnapshots/Regression_2/model_end_of_epoch_9.pt")
-
+            
             model.summary()
+            
 
-            if config["TrainingConfig"].get("ContrastLearningStrategy",None):
-                if config["TrainingConfig"]["ContrastLearningStrategy"] == "CosignSimilarityLoss":
-                    print("Using Cosign Similarity Loss")
-                    loss_function = CosignSimilarityLoss()
-                elif config["TrainingConfig"]["ContrastLearningStrategy"] == "EuclidianDistanceLoss":
-                    print("Using Euclidian Distance Loss")
-                    loss_function = EuclidianDistanceLoss()
-                else:
-                    raise ValueError("ContrastLearningStrategy not recognized")
-            else:
-                loss_function = HaversineLoss(use_standarized_input=config["DatasetConfig"]["normalize_labels"])
+            loss_function = torch.nn.CrossEntropyLoss(weight=class_weights)
 
             optimizer = torch.optim.Adam(model.parameters(), 
                                         lr=config["TrainingConfig"]["LearningRate"],
@@ -115,7 +113,7 @@ if __name__ == '__main__':
                                         betas=config["TrainingConfig"]["Betas"])
             
             lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=config["TrainingConfig"]["Gamma"])
-        
+
             trainer = SingleGPUTrainer(test_dataset=dataset_test,
                                         train_dataset=dataset_train,
                                         test_dataloader_config=config["DataLoaderConfig"]["Test"],
@@ -132,10 +130,12 @@ if __name__ == '__main__':
                                         log_mlflow=config["TrainingConfig"]["LogMLFlow"],
                                         mlflow_experiment_name=config["TrainingConfig"]["MLFlowExperimentName"],
                                         full_run_config=config,
-                                        contrast_learning_strategy = config["TrainingConfig"].get("ContrastLearningStrategy",None),
-                                        run_name=config["TrainingConfig"].get("RunName",None))
+                                        run_name=config["TrainingConfig"].get("RunName",None),
+                                        output_lable_dict_train=label_dict_train_path,
+                                        output_lable_dict_test=label_dict_test_path)
             
             trainer.train()
+        
 
         except Exception as e:
             run_name = config["TrainingConfig"].get("RunName","NoName")

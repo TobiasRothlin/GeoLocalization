@@ -1,0 +1,16 @@
+Bootstrap: docker
+From: nvidia/pytorch:23.10-py3
+Registry: nvcr.io
+%files
+    requirements-Training.txt /opt/requirements.txt
+    
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    apt update
+    apt install -y --no-install-recommends git gnupg2 python3-tk build-essential zsh
+    rm -rf /var/lib/apt/lists/*
+    python -m pip install --upgrade pip
+    pip install -r /opt/requirements.txt
+
+%runscript
+    exec -a TRothlin_Train_Classification python3 /home/tobias.rothlin/GeoLocalization/src/DGX1/src/GlobalClassificationTraining/main.py

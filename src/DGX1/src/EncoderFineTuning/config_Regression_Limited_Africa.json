@@ -34,7 +34,7 @@
                 "load_pooling_output": false,
                 "use_gaussian_smoothing": false,
                 "workers": 4,
-                "limit_data_by_continent": "Europe",
+                "limit_data_by_continent": "Africa",
                 "limit_data_by_country": null
             },
             "DataLoaderConfig": {
@@ -180,13 +180,13 @@
                 }
             },
             "TrainingConfig": {
-                "Epochs": 2,
+                "Epochs": 20,
                 "SaveEvery": 1000,
-                "RunName": "Regression_Europe",
+                "RunName": "Regression_Africa",
                 "SnapshotPath": "/home/tobias.rothlin/data/TrainingSnapshots",
                 "LogMLFlow": false,
                 "MLFlowExperimentName": "ClipLocationDecoder",
-                "GradientAccumulationSteps": 1,
+                "GradientAccumulationSteps": 8,
                 "ContrastLearningStrategy": null,
                 "LearningRate": 0.0001,
                 "Amsgrad": true,

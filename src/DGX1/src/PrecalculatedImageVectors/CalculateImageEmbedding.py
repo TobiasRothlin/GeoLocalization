@@ -104,10 +104,14 @@ class ImageEmbeddingCalculator:
                     print(f"Json data: {json_data}")
                     raise e
 
-                json_data["image_embedding"] = {
-                    self.base_model: {}
-                }
+                if json_data.get("image_embedding") is None:
+                    json_data["image_embedding"] = {
+                        self.base_model: {}
+                    }
 
+                if json_data["image_embedding"].get(self.base_model) is None:
+                    json_data["image_embedding"][self.base_model] = {}
+                    
                 # json_data["image_embedding"][self.base_model]["last_hidden_state"] = last_hidden_state_path
                 json_data["image_embedding"][self.base_model]["pooler_output"] = pooler_output_path
                 

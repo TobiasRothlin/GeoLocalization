@@ -18,12 +18,14 @@ if __name__ == "__main__":
 
     print("\033[37m") # Light Gray
     
-    dl_Test = DataLocator(TEST_DATA_FOLDER)
-    dl_Train = DataLocator(TRAIN_DATA_FOLDER)
+    dl_Test = DataLocator(TEST_DATA_FOLDER,use_cache=False)
+    dl_Train = DataLocator(TRAIN_DATA_FOLDER,use_cache=False)
 
     test_files_json = dl_Test.get_files(".json")
     test_files_jpg = dl_Test.get_files(".jpg")
     test_files_jpeg = dl_Test.get_files(".jpeg")
+
+    print(len(test_files_json))
 
     train_files_json = dl_Train.get_files(".json")
     train_files_jpg = dl_Train.get_files(".jpg")

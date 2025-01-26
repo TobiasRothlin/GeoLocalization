@@ -370,6 +370,18 @@ def doVisualizaiton(trian_files,test_files):
         mlflow.log_metric(f"Train Lon Min", min(global_lon))
         mlflow.log_metric(f"Train Lon Max", max(global_lon))
 
+
+        fig = go.Figure(data=go.Scattergeo(
+                lon = global_lon,
+                lat = global_lat,
+                mode = 'markers',
+                marker_color = "blue",
+                text = country
+            ))
+        fig.update_geos(projection_type="natural earth")
+        fig.update_layout(title=f"Global Train Data Distribution")
+        mlflow.log_figure(fig, f"Train/Global_Distribution.html")
+
         global_lat, global_lon = [],[]
 
         for country, latlong in test_position_by_country.items():
@@ -419,6 +431,17 @@ def doVisualizaiton(trian_files,test_files):
         mlflow.log_metric(f"Test Lat Max", max(global_lat))
         mlflow.log_metric(f"Test Lon Min", min(global_lon))
         mlflow.log_metric(f"Test Lon Max", max(global_lon))
+
+        fig = go.Figure(data=go.Scattergeo(
+                lon = global_lon,
+                lat = global_lat,
+                mode = 'markers',
+                marker_color = "blue",
+                text = country
+            ))
+        fig.update_geos(projection_type="natural earth")
+        fig.update_layout(title=f"Global Test Data Distribution")
+        mlflow.log_figure(fig, f"Test/Global_Distribution.html")
         
         
         

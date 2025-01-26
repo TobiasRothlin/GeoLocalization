@@ -1,0 +1,44 @@
+{
+    "Model":
+    {
+        "Classification": {
+            "ModelPath": "/home/tobias.rothlin/data/TrainingSnapshots/Classification_Contient",
+            "ModelWeights": "/model_end_of_epoch_0.pt",
+            "ModelConfig": "/run_config.json"
+        }
+        ,
+        "Regression": {
+            "Europe": {
+                "ModelPath": "/home/tobias.rothlin/data/TrainingSnapshots/Regression_Europe",
+                "ModelWeights": "/model_end_of_epoch_3.pt",
+                "ModelConfig": "/run_config.json"
+            },
+            "Oceania": {
+                "ModelPath": "/home/tobias.rothlin/data/TrainingSnapshots/Regression_Oceania",
+                "ModelWeights": "/model_end_of_epoch_1.pt",
+                "ModelConfig": "/run_config.json"
+            },
+            "Asia": {
+                "ModelPath": "/home/tobias.rothlin/data/TrainingSnapshots/Regression_Asia",
+                "ModelWeights": "/model_end_of_epoch_1.pt",
+                "ModelConfig": "/run_config.json"
+            },
+            "North America": {
+                "ModelPath": "/home/tobias.rothlin/data/TrainingSnapshots/Regression_North_America",
+                "ModelWeights": "/model_end_of_epoch_1.pt",
+                "ModelConfig": "/run_config.json"
+            },
+            "South America": {
+                "ModelPath": "/home/tobias.rothlin/data/TrainingSnapshots/Regression_South_America",
+                "ModelWeights": "/model_end_of_epoch_1.pt",
+                "ModelConfig": "/run_config.json"
+            },
+            "Africa": {
+                "ModelPath": "/home/tobias.rothlin/data/TrainingSnapshots/Regression_Africa_0",
+                "ModelWeights": "/model_end_of_epoch_19.pt",
+                "ModelConfig": "/run_config.json"
+            }
+
+        }
+    }
+}
