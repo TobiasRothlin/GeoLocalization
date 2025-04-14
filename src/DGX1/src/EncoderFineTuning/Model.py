@@ -5,15 +5,24 @@ from transformers import CLIPModel
 class LocationDecoder(torch.nn.Module):
 
     def __init__(self,config,base_model,use_pre_calculated_embeddings,freeze_base_model,is_pre_training=False):
+        """
+        :param config:
+        :param base_model:
+        :param use_pre_calculated_embeddings:
+        :param freeze_base_model:
+        :param is_pre_training:
+        """
         super(LocationDecoder, self).__init__()
 
         self.use_pre_calculated_embeddings = use_pre_calculated_embeddings
         self.base_model = base_model
+        self.is_pre_training = is_pre_training
+        self.freeze_base_model = freeze_base_model
 
         self.use_location_head = config["use_location_head"]
         self.use_similarity_head = config["use_similarity_head"]
-        self.freeze_base_model = freeze_base_model
 
+        # Use precalculated embeddings or load pretrained clip vision encoder
         if self.use_pre_calculated_embeddings:
             self.vision_model = None
         else:
@@ -22,7 +31,8 @@ class LocationDecoder(torch.nn.Module):
             if self.freeze_base_model:
                 for param in self.vision_model.parameters():
                     param.requires_grad = False
-        
+
+        # Build Model architecture
         if self.use_location_head:
             self.location_head = LocationHeadClip(config["LocationHeadClip"])
         else:
@@ -37,10 +47,12 @@ class LocationDecoder(torch.nn.Module):
 
         self.embedding = None
 
-        self.is_pre_training = is_pre_training
+
 
     def forward(self, x):
+        # Run forward pass through model
         if self.use_pre_calculated_embeddings:
+            # If model uses pre calculated embeddings no vision model is used
             pass
         else:
             x = self.vision_model(x)
@@ -48,9 +60,10 @@ class LocationDecoder(torch.nn.Module):
         if self.use_location_head:
             x = self.location_head(x)
 
+        # Save copy of x which represents the embedding vector for the input image
+        # Shape (Batch, Embedding Dimension)
         self.embedding = x.clone()
 
-        # Shape (Batch, Embedding Dimension)
         if self.use_similarity_head:
             x = self.similarity_head(x)
         else:
@@ -122,9 +135,9 @@ class LocationHeadClip(torch.nn.Module):
             x = transformer(x)
 
         if self.mean_locatation_head_output:
-            x = torch.mean(x, dim=1)
+            x = torch.mean(x, dim=1) # Calculate the mean over all token embeddings from the transformer layer output
         else:
-            x = x[:,0,:]
+            x = x[:,0,:] # Take the CLS token embedding
             x = self.linear_layer_mapping(x)
             x = torch.nn.functional.tanh(x)
         return x

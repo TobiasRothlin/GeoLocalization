@@ -98,6 +98,7 @@ class GeoLocalizationDataset(Dataset):
             print("Not normalizing labels")
 
         print(f"Using {self.workers} workers to load data")
+
         self.load_data()
 
     def load_data(self):

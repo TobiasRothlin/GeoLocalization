@@ -2,6 +2,9 @@ import torch
 
 class HaversineLoss(torch.nn.Module):
     def __init__(self,use_standarized_input=False):
+        """
+        Custom Loss function to train regression model
+        """
         super(HaversineLoss, self).__init__()
         self.earth_radius = 6371.0
         self.pi = torch.acos(torch.zeros(1)).item() * 2
@@ -16,11 +19,13 @@ class HaversineLoss(torch.nn.Module):
         target_lat, target_lon = target_location[:, 0], target_location[:, 1]
 
         if self.use_standarized_input:
+            # The model output needs to be multiplied by 90 and 180 respectively to get the actual Lat,Long
             pred_lat = pred_lat * 90
             pred_lon = pred_lon * 180
             target_lat = target_lat * 90
             target_lon = target_lon * 180
 
+        # Haversine Function implemented with pytorch and calculates the value for each element in a batch separately
         delta_lat = self.__radians(pred_lat - target_lat)
 
         alpha_0 = torch.pow(torch.sin(delta_lat / 2), 2)
@@ -28,11 +33,11 @@ class HaversineLoss(torch.nn.Module):
         alpha_2 = torch.pow(torch.sin(self.__radians(pred_lon - target_lon) / 2), 2)
 
         haversign = 2 * self.earth_radius * torch.asin(torch.sqrt(alpha_0 + alpha_1 * alpha_2))
-        return haversign
+        return haversign # Shape (Batch,dist)
 
     def forward(self, pred_location, target_location):
         haversign = self.haversine(pred_location, target_location)
-        return torch.mean(haversign)
+        return torch.mean(haversign) # Calculate the mean over all distances in each batch. (Mean Error Loss in km)
 
 
     def __radians(self, x):
